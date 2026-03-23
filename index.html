@@ -4,36 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>Biology</title>
+    <title>BIOLOGY</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;700&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap');
-
         :root {
-            --g: #00ffcc;
-            --b: #00d4ff;
             --r: #ff2d55;
-            --p: #a855f7;
-            --o: #ff8c42;
-            --y: #ffe066;
-            --bg: rgba(3, 5, 12, .93);
-            --brd: rgba(0, 212, 255, .16);
-            --hud: 'Orbitron', sans-serif;
-            --mono: 'Share Tech Mono', monospace;
-            --body: 'Rajdhani', sans-serif;
-
-            /* Layout tokens — overridden at each breakpoint */
-            --topbar-h: 44px;
-            --nav-h: 48px;
-            --panel-w: 220px;
-            --card-p: 10px 12px;
-            --fs-hud: .72rem;
-            --fs-body: .72rem;
-            --fs-mono: .58rem;
-            --bpm-fs: 1.8rem;
-            --magn-fs: 1.6rem;
+            --r2: rgba(255, 45, 85, .14);
+            --b: #00e5ff;
+            --b2: rgba(0, 229, 255, .11);
+            --g: #00ffaa;
+            --g2: rgba(0, 255, 170, .09);
+            --p: #bf5fff;
+            --am: #fbbf24;
+            --bg: #01030b;
+            --sf: rgba(255, 255, 255, .025);
+            --bd: rgba(255, 255, 255, .05);
+            --bdh: rgba(255, 255, 255, .11);
+            --td: rgba(220, 235, 252, .42);
+            --hud: 'Syne', sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --body: 'Space Grotesk', sans-serif;
+            --th: 50px;
+            --nh: 54px;
+            --pw: 222px;
         }
 
-        /* ─── RESET ─── */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -45,173 +42,367 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #01020a;
+            background: var(--bg);
             font-family: var(--body);
-            color: #c8d8e8;
+            color: #dceeff;
             -webkit-tap-highlight-color: transparent
         }
 
-        canvas#bg {
+        /* layered canvases */
+        #c-main {
             position: fixed;
             inset: 0;
-            z-index: 1;
+            z-index: 2;
             display: block
         }
 
         .scanlines {
             position: fixed;
             inset: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 212, 255, .013) 2px, rgba(0, 212, 255, .013) 4px);
+            z-index: 5;
             pointer-events: none;
-            z-index: 2
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, .055) 3px, rgba(0, 0, 0, .055) 4px)
         }
 
         .vignette {
             position: fixed;
             inset: 0;
-            background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 38%, rgba(0, 0, 0, .88) 100%);
+            z-index: 6;
             pointer-events: none;
-            z-index: 3
+            background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 26%, rgba(1, 3, 11, .94) 100%)
         }
 
-        /* ═══════════════════════════════════
-   BOOT
-═══════════════════════════════════ */
-        #boot {
+        /* ════ INTRO ════ */
+        #intro {
             position: fixed;
             inset: 0;
             z-index: 9000;
+            background: #01030b;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            background: #01020a;
-            transition: opacity 1.4s
-        }
-
-        #boot.out {
-            opacity: 0;
-            pointer-events: none
-        }
-
-        .logo {
-            font-family: var(--hud);
-            font-size: clamp(1.8rem, 6vw, 4rem);
-            font-weight: 900;
-            background: linear-gradient(135deg, #00ffcc 0%, #00d4ff 45%, #a855f7 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: .12em;
-            animation: lglow 2s infinite alternate;
-            text-align: center
-        }
-
-        @keyframes lglow {
-            from {
-                filter: drop-shadow(0 0 15px rgba(0, 255, 204, .25))
-            }
-
-            to {
-                filter: drop-shadow(0 0 50px rgba(0, 212, 255, .65))
-            }
-        }
-
-        .boot-sub {
-            font-family: var(--mono);
-            font-size: clamp(.45rem, 1.8vw, .7rem);
-            color: var(--g);
-            letter-spacing: .28em;
-            margin-top: 7px;
-            opacity: .8;
-            text-align: center
-        }
-
-        .boot-sub2 {
-            font-family: var(--mono);
-            font-size: clamp(.4rem, 1.4vw, .58rem);
-            color: rgba(168, 85, 247, .55);
-            letter-spacing: .18em;
-            margin-top: 4px;
-            text-align: center
-        }
-
-        .bar-wrap {
-            width: min(340px, 78vw);
-            margin-top: 40px
-        }
-
-        .bar-bg {
-            height: 2px;
-            background: rgba(0, 212, 255, .1);
+            justify-content: center;
             overflow: hidden
         }
 
-        .bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--g), var(--b));
-            box-shadow: 0 0 8px var(--b);
-            transition: width .16s linear
+        #intro.out {
+            animation: ifade 2s cubic-bezier(.4, 0, .2, 1) forwards;
+            pointer-events: none
         }
 
-        .boot-log {
-            font-family: var(--mono);
-            font-size: .58rem;
-            color: rgba(0, 212, 255, .5);
-            margin-top: 9px;
-            height: 14px;
-            letter-spacing: .04em
+        @keyframes ifade {
+            0% {
+                opacity: 1
+            }
+
+            60% {
+                opacity: 1
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.04)
+            }
         }
 
-        .btn-start {
-            margin-top: 36px;
-            display: none;
+        #c-dna {
+            position: absolute;
+            inset: 0;
+            z-index: 0
+        }
+
+        .sline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            z-index: 1;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, .6), rgba(0, 255, 170, .42), transparent);
+            animation: scnd 3s .5s ease-in-out forwards;
+            opacity: 0
+        }
+
+        @keyframes scnd {
+            0% {
+                opacity: 0;
+                top: 0
+            }
+
+            8% {
+                opacity: 1
+            }
+
+            92% {
+                opacity: .65
+            }
+
+            100% {
+                opacity: 0;
+                top: 100%
+            }
+        }
+
+        .ic {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 0 24px
+        }
+
+        .gt {
             font-family: var(--hud);
-            font-size: clamp(.55rem, 1.8vw, .82rem);
-            font-weight: 700;
-            letter-spacing: .22em;
-            padding: 11px 38px;
-            background: transparent;
-            border: 1px solid var(--g);
-            color: var(--g);
-            cursor: pointer;
-            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
-            transition: all .35s
+            font-size: clamp(2.8rem, 9.5vw, 6rem);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: .04em;
+            display: inline-block;
+            position: relative;
+            animation: gm 5s infinite
         }
 
-        .btn-start:hover {
-            background: rgba(0, 255, 204, .07);
-            box-shadow: 0 0 25px rgba(0, 255, 204, .28)
+        @keyframes gm {
+
+            0%,
+            88%,
+            100% {
+                transform: none
+            }
+
+            89% {
+                transform: skewX(.45deg)
+            }
+
+            90% {
+                transform: skewX(-.45deg)
+            }
+
+            91% {
+                transform: none
+            }
         }
 
-        .btn-start.show {
-            display: block;
-            animation: btnin .5s ease forwards
+        .gt::before,
+        .gt::after {
+            content: attr(data-t);
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0)
         }
 
-        @keyframes btnin {
+        .gt::before {
+            left: 3px;
+            text-shadow: -3px 0 var(--r);
+            color: var(--r);
+            animation: ga 3.4s infinite linear alternate-reverse
+        }
+
+        .gt::after {
+            left: -3px;
+            text-shadow: 3px 0 var(--b);
+            color: var(--b);
+            animation: gb 3.9s infinite linear alternate-reverse
+        }
+
+        @keyframes ga {
+            0% {
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0)
+            }
+
+            12% {
+                clip-path: polygon(0 12%, 100% 12%, 100% 20%, 0 20%)
+            }
+
+            40% {
+                clip-path: polygon(0 50%, 100% 50%, 100% 57%, 0 57%)
+            }
+
+            68% {
+                clip-path: polygon(0 74%, 100% 74%, 100% 82%, 0 82%)
+            }
+
+            100% {
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0)
+            }
+        }
+
+        @keyframes gb {
+            0% {
+                clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%)
+            }
+
+            20% {
+                clip-path: polygon(0 28%, 100% 28%, 100% 35%, 0 35%)
+            }
+
+            50% {
+                clip-path: polygon(0 60%, 100% 60%, 100% 66%, 0 66%)
+            }
+
+            80% {
+                clip-path: polygon(0 8%, 100% 8%, 100% 15%, 0 15%)
+            }
+
+            100% {
+                clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%)
+            }
+        }
+
+        .isub {
+            font-family: var(--mono);
+            font-size: clamp(.46rem, 1.7vw, .7rem);
+            color: rgba(0, 229, 255, .6);
+            letter-spacing: .24em;
+            margin-top: 10px;
+            animation: ta 1s .8s both
+        }
+
+        .isub2 {
+            font-family: var(--mono);
+            font-size: clamp(.37rem, 1.2vw, .54rem);
+            color: rgba(191, 95, 255, .42);
+            letter-spacing: .14em;
+            margin-top: 4px;
+            animation: ta 1s 1.1s both
+        }
+
+        @keyframes ta {
             from {
                 opacity: 0;
-                transform: translateY(10px)
+                filter: blur(8px);
+                letter-spacing: .4em
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0)
+                filter: none
             }
         }
 
-        /* ═══════════════════════════════════
-   HUD SHELL
-═══════════════════════════════════ */
+        .iring {
+            width: 72px;
+            height: 72px;
+            margin: 26px auto 0;
+            position: relative
+        }
+
+        .iring svg {
+            width: 100%;
+            height: 100%;
+            animation: rr 2s linear infinite
+        }
+
+        .irc {
+            position: absolute;
+            inset: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 229, 255, .12)
+        }
+
+        @keyframes rr {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .ibar {
+            width: min(300px, 68vw);
+            margin: 20px auto 0
+        }
+
+        .ibt {
+            height: 1px;
+            background: rgba(255, 255, 255, .05)
+        }
+
+        .ibf {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--g), var(--b));
+            transition: width .13s;
+            box-shadow: 0 0 7px var(--b)
+        }
+
+        .ilog {
+            font-family: var(--mono);
+            font-size: .5rem;
+            color: rgba(0, 229, 255, .36);
+            margin-top: 7px;
+            height: 13px;
+            letter-spacing: .04em;
+            text-align: left
+        }
+
+        .ipct {
+            font-family: var(--hud);
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: rgba(0, 229, 255, .045);
+            margin-top: 2px;
+            text-align: right;
+            line-height: 1
+        }
+
+        .ilbtn {
+            display: none;
+            margin: 24px auto 0;
+            font-family: var(--hud);
+            font-size: clamp(.48rem, 1.5vw, .73rem);
+            font-weight: 700;
+            letter-spacing: .22em;
+            padding: 12px 42px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            position: relative;
+            animation: fadein .5s ease forwards
+        }
+
+        .ilbtn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 229, 255, .07), rgba(0, 255, 170, .04));
+            clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)
+        }
+
+        .ilbtn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(0, 229, 255, .32);
+            clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)
+        }
+
+        .ilbtn:hover::after {
+            border-color: rgba(0, 229, 255, .65)
+        }
+
+        .ilbtn.show {
+            display: block
+        }
+
+        @keyframes fadein {
+            from {
+                opacity: 0;
+                transform: translateY(7px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* ════ HUD ════ */
         #hud {
             position: fixed;
             inset: 0;
             z-index: 10;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 1s;
+            transition: opacity 1.2s;
             display: flex;
             flex-direction: column
         }
@@ -220,48 +411,87 @@
             opacity: 1
         }
 
-        /* ── TOPBAR ── */
         .topbar {
-            flex: 0 0 var(--topbar-h);
-            height: var(--topbar-h);
+            flex: 0 0 var(--th);
+            height: var(--th);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 12px;
-            background: linear-gradient(180deg, rgba(0, 0, 0, .96), transparent);
-            border-bottom: 1px solid rgba(0, 212, 255, .09);
-            position: relative;
+            padding: 0 14px;
+            pointer-events: all;
             z-index: 11;
-            pointer-events: all
+            background: linear-gradient(180deg, rgba(1, 3, 11, .97), rgba(1, 3, 11, .5));
+            border-bottom: 1px solid var(--bd);
+            position: relative
         }
 
-        .top-title {
+        .topbar::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, .18), rgba(0, 255, 170, .11), transparent)
+        }
+
+        .tl {
+            display: flex;
+            align-items: center;
+            gap: 9px
+        }
+
+        .hm svg {
+            width: 27px;
+            height: 27px
+        }
+
+        .ttl {
             font-family: var(--hud);
-            font-size: clamp(.45rem, 1.4vw, .72rem);
+            font-size: clamp(.47rem, 1.2vw, .7rem);
             font-weight: 700;
-            color: var(--b);
-            letter-spacing: .12em;
+            color: rgba(255, 255, 255, .77);
+            letter-spacing: .06em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 60vw
+            max-width: 52vw
         }
 
-        .top-right {
+        .ttl em {
+            color: var(--b);
+            font-style: normal
+        }
+
+        .tr {
             display: flex;
+            align-items: center;
             gap: 12px;
-            font-family: var(--mono);
-            font-size: clamp(.4rem, 1.1vw, .55rem);
-            color: rgba(0, 212, 255, .5);
             flex-shrink: 0
         }
 
-        .dot {
-            color: var(--g);
-            animation: blink 1.6s infinite
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--mono);
+            font-size: .44rem;
+            color: var(--td);
+            padding: 3px 7px;
+            border: 1px solid var(--bd);
+            background: var(--sf)
         }
 
-        @keyframes blink {
+        .pdot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--g);
+            box-shadow: 0 0 7px var(--g);
+            animation: pd 2s infinite
+        }
+
+        @keyframes pd {
 
             0%,
             100% {
@@ -269,100 +499,516 @@
             }
 
             50% {
-                opacity: .1
+                opacity: .16
             }
         }
 
-        /* ── MAIN AREA (between topbar and nav) ── */
-        .main-area {
-            flex: 1 1 0;
-            display: flex;
-            flex-direction: row;
-            overflow: hidden;
-            position: relative;
-            min-height: 0
+        #clk {
+            font-family: var(--mono);
+            font-size: .44rem;
+            color: rgba(0, 229, 255, .42);
+            letter-spacing: .05em
         }
 
-        /* ── SIDE PANELS ── */
+        .main {
+            flex: 1 1 0;
+            display: flex;
+            overflow: hidden;
+            min-height: 0;
+            position: relative
+        }
+
         .pl,
         .pr {
-            flex: 0 0 var(--panel-w);
-            width: var(--panel-w);
+            flex: 0 0 var(--pw);
+            width: var(--pw);
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            padding: 7px 5px 7px 6px;
+            gap: 4px;
+            padding: 7px 5px;
             overflow-y: auto;
             overflow-x: hidden;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(0, 212, 255, .2) transparent;
             pointer-events: all;
             z-index: 12;
-            /* fade edges */
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 8px, black calc(100% - 8px), transparent 100%);
-            mask-image: linear-gradient(to bottom, transparent 0, black 8px, black calc(100% - 8px), transparent 100%)
+            scrollbar-width: none;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 10px, black calc(100% - 10px), transparent);
+            mask-image: linear-gradient(to bottom, transparent 0, black 10px, black calc(100% - 10px), transparent)
         }
 
         .pl::-webkit-scrollbar,
         .pr::-webkit-scrollbar {
-            width: 2px
+            display: none
         }
 
-        .pl::-webkit-scrollbar-thumb,
-        .pr::-webkit-scrollbar-thumb {
-            background: rgba(0, 212, 255, .2)
-        }
-
-        .pl {
-            padding-left: 8px
-        }
-
-        .pr {
-            padding-right: 8px
-        }
-
-        .canvas-wrap {
+        .cw {
             flex: 1 1 0;
             position: relative;
             min-width: 0;
             min-height: 0
         }
 
-        /* ── BOTTOM NAV ── */
+        .card {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            padding: 8px 10px;
+            position: relative;
+            overflow: hidden;
+            transition: all .22s;
+            flex-shrink: 0;
+            backdrop-filter: blur(12px)
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px
+        }
+
+        .card:hover {
+            border-color: var(--bdh);
+            background: rgba(255, 255, 255, .04);
+            transform: translateX(2px)
+        }
+
+        .c-r::before {
+            background: var(--r);
+            box-shadow: 0 0 9px var(--r)
+        }
+
+        .c-g::before {
+            background: var(--g);
+            box-shadow: 0 0 9px var(--g)
+        }
+
+        .c-b::before {
+            background: var(--b);
+            box-shadow: 0 0 9px var(--b)
+        }
+
+        .c-p::before {
+            background: var(--p);
+            box-shadow: 0 0 9px var(--p)
+        }
+
+        .c-am::before {
+            background: var(--am);
+            box-shadow: 0 0 9px var(--am)
+        }
+
+        .ch {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .ct {
+            font-family: var(--hud);
+            font-size: .55rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            color: rgba(255, 255, 255, .6)
+        }
+
+        .ctg {
+            font-family: var(--mono);
+            font-size: .41rem;
+            padding: 2px 5px;
+            border: 1px solid var(--bd);
+            color: var(--td);
+            background: var(--sf)
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .018)
+        }
+
+        .row:last-of-type {
+            border: none
+        }
+
+        .rl {
+            font-family: var(--mono);
+            font-size: .46rem;
+            color: var(--td)
+        }
+
+        .rv {
+            font-family: var(--mono);
+            font-size: .5rem;
+            font-weight: 700
+        }
+
+        .rv.r {
+            color: var(--r)
+        }
+
+        .rv.g {
+            color: var(--g)
+        }
+
+        .rv.b {
+            color: var(--b)
+        }
+
+        .rv.w {
+            color: #fff
+        }
+
+        .mt {
+            margin: 5px 0 2px
+        }
+
+        .ml {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--mono);
+            font-size: .41rem;
+            color: rgba(255, 255, 255, .2);
+            margin-bottom: 3px
+        }
+
+        .mtr {
+            height: 2px;
+            background: rgba(255, 255, 255, .04);
+            overflow: visible;
+            position: relative
+        }
+
+        .mf {
+            height: 100%;
+            position: relative;
+            transition: width 1s ease
+        }
+
+        .mf::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -3px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            filter: blur(1px)
+        }
+
+        .mf.r {
+            background: linear-gradient(90deg, rgba(255, 45, 85, .28), var(--r))
+        }
+
+        .mf.r::after {
+            background: var(--r);
+            box-shadow: 0 0 6px var(--r)
+        }
+
+        .mf.g {
+            background: linear-gradient(90deg, rgba(0, 255, 170, .28), var(--g))
+        }
+
+        .mf.g::after {
+            background: var(--g);
+            box-shadow: 0 0 6px var(--g)
+        }
+
+        .mf.b {
+            background: linear-gradient(90deg, rgba(0, 229, 255, .28), var(--b))
+        }
+
+        .mf.b::after {
+            background: var(--b);
+            box-shadow: 0 0 6px var(--b)
+        }
+
+        .mf.p {
+            background: linear-gradient(90deg, rgba(191, 95, 255, .28), var(--p))
+        }
+
+        .mf.p::after {
+            background: var(--p);
+            box-shadow: 0 0 6px var(--p)
+        }
+
+        .mf.am {
+            background: linear-gradient(90deg, rgba(251, 191, 36, .28), var(--am))
+        }
+
+        .mf.am::after {
+            background: var(--am);
+            box-shadow: 0 0 6px var(--am)
+        }
+
+        .bpr {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            margin: 5px 0
+        }
+
+        .bpn {
+            font-family: var(--hud);
+            font-size: clamp(1.3rem, 2.8vw, 1.9rem);
+            font-weight: 800;
+            color: var(--r);
+            line-height: 1;
+            text-shadow: 0 0 18px rgba(255, 45, 85, .42);
+            animation: hb .88s ease-in-out infinite
+        }
+
+        @keyframes hb {
+
+            0%,
+            100% {
+                transform: scale(1)
+            }
+
+            40% {
+                transform: scale(1.07)
+            }
+        }
+
+        .bpu {
+            font-family: var(--mono);
+            font-size: .41rem;
+            color: rgba(255, 45, 85, .38);
+            padding-bottom: 3px
+        }
+
+        .ecg {
+            flex: 1;
+            overflow: hidden;
+            height: 24px
+        }
+
+        .ecg svg {
+            width: 100%;
+            height: 100%
+        }
+
+        .zn {
+            font-family: var(--hud);
+            font-size: clamp(1rem, 2.4vw, 1.5rem);
+            font-weight: 800;
+            color: var(--b);
+            text-shadow: 0 0 12px rgba(0, 229, 255, .33)
+        }
+
+        .zu {
+            font-family: var(--mono);
+            font-size: .41rem;
+            color: rgba(0, 229, 255, .32)
+        }
+
+        .fctrl {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            padding: 8px 10px;
+            flex-shrink: 0;
+            backdrop-filter: blur(12px);
+            position: relative
+        }
+
+        .fctrl::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--am);
+            box-shadow: 0 0 8px var(--am)
+        }
+
+        .fc-t {
+            font-family: var(--hud);
+            font-size: .54rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            color: var(--am);
+            margin-bottom: 7px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .fc-r {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px 0
+        }
+
+        .fc-l {
+            font-family: var(--mono);
+            font-size: .44rem;
+            color: var(--td);
+            width: 54px;
+            flex-shrink: 0
+        }
+
+        .fc-s {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 2px;
+            background: rgba(255, 255, 255, .07);
+            outline: none;
+            cursor: pointer
+        }
+
+        .fc-s::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--b);
+            box-shadow: 0 0 7px var(--b);
+            cursor: pointer
+        }
+
+        .fc-v {
+            font-family: var(--mono);
+            font-size: .44rem;
+            color: var(--b);
+            width: 22px;
+            text-align: right;
+            flex-shrink: 0
+        }
+
+        .fc-btns {
+            display: flex;
+            gap: 3px;
+            margin-top: 6px;
+            flex-wrap: wrap
+        }
+
+        .fc-btn {
+            flex: 1;
+            min-width: 44px;
+            font-family: var(--hud);
+            font-size: .42rem;
+            font-weight: 700;
+            letter-spacing: .07em;
+            padding: 5px 3px;
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            color: var(--td);
+            cursor: pointer;
+            transition: all .18s;
+            text-align: center;
+            white-space: nowrap
+        }
+
+        .fc-btn:hover,
+        .fc-btn.on {
+            background: var(--b2);
+            border-color: var(--b);
+            color: var(--b)
+        }
+
+        .fc-btn.dan:hover {
+            background: var(--r2);
+            border-color: var(--r);
+            color: var(--r)
+        }
+
+        .fc-btn.ok.on {
+            background: var(--g2);
+            border-color: var(--g);
+            color: var(--g)
+        }
+
+        #beat {
+            position: fixed;
+            bottom: calc(var(--nh)+2px);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+            height: 16px;
+            z-index: 7;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .4s
+        }
+
+        #beat.on {
+            opacity: 1
+        }
+
+        .bb {
+            width: 3px;
+            border-radius: 1px 1px 0 0;
+            min-height: 2px;
+            transition: height .07s
+        }
+
         .bnav {
-            flex: 0 0 var(--nav-h);
-            height: var(--nav-h);
+            flex: 0 0 var(--nh);
+            height: var(--nh);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            flex-wrap: nowrap;
-            padding: 0 6px;
-            background: linear-gradient(0deg, rgba(0, 0, 0, .95), transparent);
-            border-top: 1px solid rgba(0, 212, 255, .07);
+            gap: 3px;
+            padding: 0 7px;
             pointer-events: all;
-            overflow: hidden
+            background: linear-gradient(0deg, rgba(1, 3, 11, .97), rgba(1, 3, 11, .5));
+            border-top: 1px solid var(--bd);
+            overflow: hidden;
+            position: relative
+        }
+
+        .bnav::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, .15), transparent)
         }
 
         .bn {
             font-family: var(--hud);
-            font-size: clamp(.42rem, 1.1vw, .62rem);
+            font-size: clamp(.36rem, .93vw, .55rem);
             font-weight: 700;
-            letter-spacing: .12em;
-            padding: 6px 10px;
-            background: var(--bg);
-            border: 1px solid var(--brd);
-            color: var(--b);
+            letter-spacing: .09em;
+            padding: 6px 9px;
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            color: var(--td);
             cursor: pointer;
-            clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
-            transition: all .3s;
+            transition: all .2s;
             white-space: nowrap;
-            flex-shrink: 1
+            flex-shrink: 1;
+            position: relative;
+            overflow: hidden
+        }
+
+        .bn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--b2);
+            transform: translateY(100%);
+            transition: transform .2s
+        }
+
+        .bn:hover::after,
+        .bn.on::after {
+            transform: none
         }
 
         .bn:hover,
         .bn.on {
-            background: rgba(0, 212, 255, .08);
             border-color: var(--b);
             color: #fff
         }
@@ -370,303 +1016,99 @@
         .bn.on {
             border-color: var(--g);
             color: var(--g);
-            background: rgba(0, 255, 204, .06)
+            background: rgba(0, 255, 170, .03)
         }
 
-        /* ── CARDS ── */
-        .card {
-            background: var(--bg);
-            border: 1px solid var(--brd);
-            padding: var(--card-p);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+        .bn span {
             position: relative;
-            overflow: hidden;
-            transition: box-shadow .3s, border-color .3s;
-            flex-shrink: 0
+            z-index: 1
         }
 
-        .card:hover {
-            border-color: rgba(0, 212, 255, .35);
-            box-shadow: 0 0 20px rgba(0, 212, 255, .08)
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 100%
-        }
-
-        .card.gr::before {
-            background: var(--g);
-            box-shadow: 0 0 7px var(--g)
-        }
-
-        .card.rd::before {
-            background: var(--r);
-            box-shadow: 0 0 7px var(--r)
-        }
-
-        .card.bl::before {
-            background: var(--b);
-            box-shadow: 0 0 7px var(--b)
-        }
-
-        .card.pu::before {
-            background: var(--p);
-            box-shadow: 0 0 7px var(--p)
-        }
-
-        .ch {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 7px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid rgba(255, 255, 255, .04)
-        }
-
-        .ct {
-            font-family: var(--hud);
-            font-size: clamp(.48rem, 1.1vw, .58rem);
-            font-weight: 700;
-            letter-spacing: .1em;
-            color: var(--b)
-        }
-
-        .cb {
-            font-family: var(--mono);
-            font-size: .46rem;
-            padding: 2px 4px;
-            background: rgba(0, 212, 255, .07);
-            color: rgba(0, 212, 255, .6);
-            border: 1px solid rgba(0, 212, 255, .16)
-        }
-
-        .dr {
-            display: flex;
-            justify-content: space-between;
-            padding: 2px 0;
-            font-size: clamp(.55rem, 1.1vw, .68rem);
-            border-bottom: 1px solid rgba(255, 255, 255, .022)
-        }
-
-        .dl {
-            color: rgba(180, 200, 220, .5);
-            font-family: var(--mono);
-            font-size: clamp(.48rem, 1vw, .56rem)
-        }
-
-        .dv {
-            font-family: var(--mono);
-            font-weight: 600;
-            font-size: clamp(.52rem, 1vw, .6rem)
-        }
-
-        .dg {
-            color: var(--g)
-        }
-
-        .db {
-            color: var(--b)
-        }
-
-        .dr2 {
-            color: var(--r)
-        }
-
-        .dw {
-            color: #fff
-        }
-
-        .vbw {
-            margin: 4px 0
-        }
-
-        .vlr {
-            display: flex;
-            justify-content: space-between;
-            font-family: var(--mono);
-            font-size: .5rem;
-            color: rgba(200, 220, 240, .42);
-            margin-bottom: 3px
-        }
-
-        .vb {
-            height: 3px;
-            background: rgba(255, 255, 255, .05);
-            overflow: hidden
-        }
-
-        .vf {
-            height: 100%;
-            border-radius: 2px
-        }
-
-        .fg {
-            background: linear-gradient(90deg, #00bb88, #00ffcc);
-            box-shadow: 0 0 5px #00ffcc
-        }
-
-        .fr {
-            background: linear-gradient(90deg, #bb1130, #ff2d55);
-            box-shadow: 0 0 5px #ff2d55
-        }
-
-        .fb {
-            background: linear-gradient(90deg, #0088bb, #00d4ff);
-            box-shadow: 0 0 5px #00d4ff
-        }
-
-        .bt {
-            font-family: var(--body);
-            font-size: clamp(.55rem, 1.1vw, .68rem);
-            line-height: 1.45;
-            color: rgba(200, 220, 240, .5);
-            margin-top: 5px
-        }
-
-        .bpm-num {
-            font-family: var(--hud);
-            font-size: clamp(1rem, 2.5vw, var(--bpm-fs));
-            font-weight: 900;
-            color: var(--r);
-            line-height: 1;
-            text-shadow: 0 0 15px rgba(255, 45, 85, .5);
-            animation: hbeat 1s infinite
-        }
-
-        @keyframes hbeat {
-
-            0%,
-            88%,
-            100% {
-                transform: scale(1)
-            }
-
-            50% {
-                transform: scale(1.07)
-            }
-        }
-
-        .bpms {
-            font-family: var(--mono);
-            font-size: .5rem;
-            color: rgba(255, 45, 85, .5)
-        }
-
-        .ecg-svg {
-            width: 100%;
-            height: 26px;
-            overflow: hidden;
-            margin-top: 4px
-        }
-
-        .magn {
-            font-family: var(--hud);
-            font-size: clamp(.9rem, 2.2vw, var(--magn-fs));
-            font-weight: 900;
-            color: var(--b);
-            text-shadow: 0 0 12px rgba(0, 212, 255, .5)
-        }
-
-        .magu {
-            font-family: var(--mono);
-            font-size: .56rem;
-            color: rgba(0, 212, 255, .42);
-            margin-bottom: 3px
-        }
-
-        /* Corner accents */
         .cn {
             position: absolute;
-            width: 28px;
-            height: 28px;
+            width: 20px;
+            height: 20px;
             pointer-events: none;
             z-index: 13
         }
 
         .cn-tl {
-            top: calc(var(--topbar-h) + 4px);
-            left: 5px;
-            border-top: 2px solid var(--g);
-            border-left: 2px solid var(--g)
+            top: calc(var(--th)+5px);
+            left: 6px;
+            border-top: 1px solid rgba(0, 255, 170, .38);
+            border-left: 1px solid rgba(0, 255, 170, .38)
         }
 
         .cn-tr {
-            top: calc(var(--topbar-h) + 4px);
-            right: 5px;
-            border-top: 2px solid var(--b);
-            border-right: 2px solid var(--b)
+            top: calc(var(--th)+5px);
+            right: 6px;
+            border-top: 1px solid rgba(0, 229, 255, .38);
+            border-right: 1px solid rgba(0, 229, 255, .38)
         }
 
         .cn-bl {
-            bottom: calc(var(--nav-h) + 4px);
-            left: 5px;
-            border-bottom: 2px solid var(--g);
-            border-left: 2px solid var(--g)
+            bottom: calc(var(--nh)+5px);
+            left: 6px;
+            border-bottom: 1px solid rgba(0, 255, 170, .28);
+            border-left: 1px solid rgba(0, 255, 170, .28)
         }
 
         .cn-br {
-            bottom: calc(var(--nav-h) + 4px);
-            right: 5px;
-            border-bottom: 2px solid var(--b);
-            border-right: 2px solid var(--b)
+            bottom: calc(var(--nh)+5px);
+            right: 6px;
+            border-bottom: 1px solid rgba(0, 229, 255, .28);
+            border-right: 1px solid rgba(0, 229, 255, .28)
         }
 
-        /* Crosshair */
-        .xhair {
+        .xh {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             pointer-events: none;
             z-index: 14
         }
 
-        .xhair::before,
-        .xhair::after {
+        .xh::before,
+        .xh::after {
             content: '';
             position: absolute;
-            background: rgba(0, 255, 204, .18)
+            background: rgba(0, 229, 255, .09)
         }
 
-        .xhair::before {
+        .xh::before {
             width: 1px;
             height: 100%;
             left: 50%
         }
 
-        .xhair::after {
+        .xh::after {
             width: 100%;
             height: 1px;
             top: 50%
         }
 
-        .xring {
+        .xr {
             position: absolute;
             inset: 8px;
-            border: 1px solid rgba(0, 255, 204, .15);
+            border: 1px solid rgba(0, 229, 255, .09);
             border-radius: 50%;
-            animation: spin 9s linear infinite
+            animation: spin 10s linear infinite
         }
 
-        .xring::before {
+        .xr::before {
             content: '';
             position: absolute;
-            width: 5px;
-            height: 5px;
-            background: var(--g);
+            width: 3px;
+            height: 3px;
+            background: var(--b);
             border-radius: 50%;
-            top: -2.5px;
+            top: -1.5px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 0 7px var(--g)
+            box-shadow: 0 0 6px var(--b)
         }
 
         @keyframes spin {
@@ -675,228 +1117,314 @@
             }
         }
 
-        /* TOOLTIP */
-        .card[data-tip] {
-            cursor: help
-        }
-
-        .tip-box {
+        .vhl {
             position: fixed;
-            z-index: 500;
-            background: rgba(3, 5, 12, .97);
-            border: 1px solid rgba(0, 212, 255, .3);
-            border-left: 3px solid var(--b);
-            padding: 10px 13px;
-            max-width: 200px;
+            font-family: var(--mono);
+            font-size: .53rem;
+            letter-spacing: .07em;
+            background: rgba(1, 3, 11, .92);
+            border: 1px solid rgba(0, 229, 255, .15);
+            border-left: 2px solid;
+            padding: 5px 9px;
             pointer-events: none;
             opacity: 0;
-            transition: opacity .2s;
-            font-family: var(--body);
-            font-size: .74rem;
-            line-height: 1.6;
-            color: rgba(200, 220, 240, .85);
-            box-shadow: 0 0 30px rgba(0, 212, 255, .15)
-        }
-
-        .tip-box.on {
-            opacity: 1
-        }
-
-        .tip-title {
-            font-family: var(--hud);
-            font-size: .56rem;
-            color: var(--b);
-            letter-spacing: .1em;
-            margin-bottom: 4px;
-            border-bottom: 1px solid rgba(0, 212, 255, .15);
-            padding-bottom: 3px
-        }
-
-        /* VESSEL HOVER LABEL */
-        .vessel-hover-label {
-            position: fixed;
-            font-family: var(--hud);
-            font-size: .6rem;
-            color: var(--b);
-            letter-spacing: .08em;
-            background: rgba(3, 5, 12, .9);
-            border: 1px solid rgba(0, 212, 255, .25);
-            padding: 4px 9px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity .2s;
+            transition: opacity .12s;
             z-index: 20
         }
 
-        .vessel-hover-label.on {
+        .vhl.on {
             opacity: 1
         }
 
-        /* ═══════════════════════════════════
-   FLOATING INFO PANELS
-═══════════════════════════════════ */
-        .info-float {
+        .tip {
             position: fixed;
-            z-index: 30;
-            background: rgba(3, 5, 12, .96);
-            border: 1px solid var(--brd);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            width: min(200px, 32vw);
-            padding: 10px 12px;
-            pointer-events: all;
-            transition: opacity .35s, transform .35s;
-            box-shadow: 0 0 24px rgba(0, 0, 0, .5);
-            cursor: grab
-        }
-
-        .info-float.hidden {
+            z-index: 500;
+            background: rgba(1, 3, 11, .97);
+            border: 1px solid var(--bd);
+            border-left: 2px solid var(--b);
+            padding: 10px 13px;
+            max-width: 205px;
+            pointer-events: none;
             opacity: 0;
-            pointer-events: none
+            transition: opacity .14s;
+            font-family: var(--body);
+            font-size: .69rem;
+            line-height: 1.64;
+            color: rgba(218, 234, 252, .8);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, .7)
         }
 
-        .info-float-artery {
-            top: calc(var(--topbar-h) + 6px);
-            left: 50%;
-            transform: translateX(-30%);
-            border-left: 3px solid var(--r)
-        }
-
-        .info-float-cap {
-            bottom: calc(var(--nav-h) + 8px);
-            left: 50%;
-            transform: translateX(-55%);
-            border-left: 3px solid var(--g)
-        }
-
-        .info-float-vein {
-            bottom: calc(var(--nav-h) + 8px);
-            right: calc(var(--panel-w) + 14px);
-            border-left: 3px solid var(--b)
-        }
-
-        .info-float-dir {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-left: 3px solid var(--y);
-            width: min(280px, 74vw)
-        }
-
-        .if-title {
-            font-family: var(--hud);
-            font-size: .6rem;
-            font-weight: 700;
-            letter-spacing: .12em;
-            margin-bottom: 7px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid rgba(255, 255, 255, .06);
-            display: flex;
-            justify-content: space-between;
-            align-items: center
-        }
-
-        .if-close {
-            font-size: .8rem;
-            cursor: pointer;
-            opacity: .5;
-            transition: opacity .2s;
-            line-height: 1;
-            padding: 0 2px
-        }
-
-        .if-close:hover {
+        .tip.on {
             opacity: 1
         }
 
-        .if-row {
+        .tip-t {
+            font-family: var(--hud);
+            font-size: .49rem;
+            color: var(--b);
+            letter-spacing: .1em;
+            margin-bottom: 4px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--bd)
+        }
+
+        /* MICRO-ZOOM */
+        #mzmod {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .4s;
+            background: rgba(1, 3, 11, .7);
+            backdrop-filter: blur(16px)
+        }
+
+        #mzmod.on {
+            opacity: 1;
+            pointer-events: all
+        }
+
+        .mzbox {
+            background: rgba(1, 3, 11, .96);
+            border: 1px solid rgba(0, 229, 255, .26);
+            width: min(480px, 90vw);
+            max-height: 80vh;
+            position: relative;
+            overflow: hidden;
+            transform: scale(.92);
+            transition: transform .4s
+        }
+
+        #mzmod.on .mzbox {
+            transform: none
+        }
+
+        .mzhdr {
             display: flex;
             justify-content: space-between;
-            padding: 3px 0;
-            font-size: .66rem;
-            border-bottom: 1px solid rgba(255, 255, 255, .025)
-        }
-
-        .if-lbl {
-            font-family: var(--mono);
-            font-size: .54rem;
-            color: rgba(180, 200, 220, .5)
-        }
-
-        .if-val {
-            font-family: var(--mono);
-            font-weight: 600;
-            font-size: .62rem
-        }
-
-        .if-val.dg {
-            color: var(--g)
-        }
-
-        .if-val.db {
+            align-items: center;
+            padding: 9px 13px;
+            border-bottom: 1px solid rgba(0, 229, 255, .12);
+            font-family: var(--hud);
+            font-size: .56rem;
+            font-weight: 700;
+            letter-spacing: .1em;
             color: var(--b)
         }
 
-        .if-val.dr2 {
-            color: var(--r)
+        .mzclose {
+            cursor: pointer;
+            opacity: .35;
+            font-size: .75rem;
+            transition: opacity .18s
         }
 
-        .if-desc {
-            font-family: var(--body);
+        .mzclose:hover {
+            opacity: 1
+        }
+
+        .mzgrid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr
+        }
+
+        #c-mz2 {
+            width: 100%;
+            height: 260px;
+            display: block
+        }
+
+        .mzinfo {
+            padding: 11px;
+            border-left: 1px solid rgba(0, 229, 255, .08);
+            overflow-y: auto;
+            max-height: 260px;
+            scrollbar-width: none;
+            background: rgba(0, 0, 0, .18)
+        }
+
+        .mzinfo::-webkit-scrollbar {
+            display: none
+        }
+
+        .mzlbl {
+            font-family: var(--hud);
+            font-size: .49rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            margin: 0 0 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .mzrow {
+            display: flex;
+            justify-content: space-between;
+            padding: 2.5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .02)
+        }
+
+        .mzk {
+            font-family: var(--mono);
+            font-size: .44rem;
+            color: var(--td)
+        }
+
+        .mzv {
+            font-family: var(--mono);
+            font-size: .48rem;
+            font-weight: 700
+        }
+
+        /* FLOATING PANELS */
+        .fp {
+            position: fixed;
+            z-index: 30;
+            background: rgba(1, 3, 11, .95);
+            border: 1px solid var(--bd);
+            backdrop-filter: blur(18px);
+            width: min(200px, 32vw);
+            padding: 10px 12px;
+            pointer-events: all;
+            transition: opacity .28s, transform .28s;
+            box-shadow: 0 16px 50px rgba(0, 0, 0, .5);
+            cursor: grab
+        }
+
+        .fp.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(5px)
+        }
+
+        .fp-a {
+            top: calc(var(--th)+7px);
+            left: 50%;
+            transform: translateX(-27%);
+            border-top: 1px solid rgba(255, 45, 85, .26)
+        }
+
+        .fp-c {
+            bottom: calc(var(--nh)+9px);
+            left: 50%;
+            transform: translateX(-51%);
+            border-top: 1px solid rgba(0, 255, 170, .26)
+        }
+
+        .fp-v {
+            bottom: calc(var(--nh)+9px);
+            right: calc(var(--pw)+12px);
+            border-top: 1px solid rgba(0, 229, 255, .26)
+        }
+
+        .fp-d {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-top: 1px solid rgba(251, 191, 36, .26);
+            width: min(285px, 74vw)
+        }
+
+        .fp-h {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--hud);
+            font-size: .54rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            margin-bottom: 7px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .fp-x {
             font-size: .7rem;
-            line-height: 1.52;
-            color: rgba(200, 220, 240, .65);
+            cursor: pointer;
+            opacity: .3;
+            transition: opacity .18s;
+            line-height: 1
+        }
+
+        .fp-x:hover {
+            opacity: 1
+        }
+
+        .fp-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2.5px 0;
+            font-size: .6rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .02)
+        }
+
+        .fp-lbl {
+            font-family: var(--mono);
+            font-size: .46rem;
+            color: var(--td)
+        }
+
+        .fp-val {
+            font-family: var(--mono);
+            font-size: .54rem;
+            font-weight: 700
+        }
+
+        .fp-desc {
+            font-family: var(--body);
+            font-size: .64rem;
+            line-height: 1.55;
+            color: var(--td);
             margin-top: 6px
         }
 
-        .if-desc strong {
+        .fp-desc strong {
             color: var(--g)
         }
 
-        /* PANEL TOGGLE BAR */
-        #panel-toggles {
+        #ptog {
             position: fixed;
-            bottom: calc(var(--nav-h) + 4px);
+            bottom: calc(var(--nh)+4px);
             left: 50%;
             transform: translateX(-50%);
             display: none;
-            gap: 4px;
+            gap: 3px;
             z-index: 25;
             pointer-events: all;
             flex-wrap: wrap;
             justify-content: center;
-            padding: 0 8px
+            padding: 0 6px
         }
 
-        .panel-toggle {
+        .pt {
             font-family: var(--hud);
-            font-size: .5rem;
+            font-size: .44rem;
             font-weight: 700;
-            letter-spacing: .1em;
-            padding: 5px 9px;
-            background: rgba(3, 5, 12, .88);
+            letter-spacing: .09em;
+            padding: 4px 8px;
+            background: rgba(1, 3, 11, .9);
             cursor: pointer;
-            border: 1px solid var(--brd);
-            color: rgba(0, 212, 255, .7);
-            transition: all .25s;
-            pointer-events: all;
+            border: 1px solid var(--bd);
+            color: var(--td);
+            transition: all .18s;
             white-space: nowrap
         }
 
-        .panel-toggle:hover {
+        .pt:hover {
             border-color: var(--b);
-            color: #fff;
-            background: rgba(0, 212, 255, .1)
+            color: #fff
         }
 
-        .panel-toggle.active {
+        .pt.active {
             border-color: var(--g);
             color: var(--g)
         }
 
-        /* ═══════════════════════════════════
-   OVERLAYS
-═══════════════════════════════════ */
+        /* OVERLAYS */
         .ov {
             position: fixed;
             inset: 0;
@@ -904,11 +1432,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(1, 2, 10, .93);
-            backdrop-filter: blur(24px);
+            background: rgba(1, 3, 11, .92);
+            backdrop-filter: blur(26px);
             opacity: 0;
             visibility: hidden;
-            transition: all .5s
+            transition: all .35s
         }
 
         .ov.on {
@@ -917,78 +1445,107 @@
         }
 
         .mbox {
-            background: linear-gradient(135deg, rgba(3, 5, 12, .99), rgba(5, 9, 20, .99));
-            border: 1px solid rgba(0, 212, 255, .18);
-            border-top: 3px solid var(--b);
-            width: min(560px, 96vw);
+            background: linear-gradient(160deg, rgba(4, 8, 20, .99), rgba(1, 3, 11, .99));
+            border: 1px solid var(--bd);
+            border-top: 1px solid rgba(0, 229, 255, .17);
+            width: min(570px, 96vw);
             max-height: 88vh;
             overflow-y: auto;
-            padding: 18px;
+            padding: 20px 18px;
             position: relative;
             scrollbar-width: thin;
-            scrollbar-color: rgba(0, 212, 255, .25) transparent;
-            -webkit-overflow-scrolling: touch
+            scrollbar-color: rgba(0, 229, 255, .15) transparent;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, .75)
         }
 
         .mbox::-webkit-scrollbar {
-            width: 3px
+            width: 2px
         }
 
         .mbox::-webkit-scrollbar-thumb {
-            background: rgba(0, 212, 255, .25)
+            background: rgba(0, 229, 255, .15)
         }
 
-        .mt {
+        .mbox::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, .3), transparent)
+        }
+
+        .ov-t {
             font-family: var(--hud);
-            font-size: clamp(.85rem, 2.6vw, 1.2rem);
-            font-weight: 900;
+            font-size: clamp(.86rem, 2.6vw, 1.22rem);
+            font-weight: 800;
             background: linear-gradient(135deg, var(--g), var(--b));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: .1em;
-            margin-bottom: 5px
+            letter-spacing: .06em;
+            margin-bottom: 4px
         }
 
-        .ms {
+        .ov-s {
             font-family: var(--mono);
-            font-size: .56rem;
-            color: rgba(0, 212, 255, .42);
-            letter-spacing: .12em;
-            margin-bottom: 18px;
-            padding-bottom: 11px;
-            border-bottom: 1px solid rgba(255, 255, 255, .04)
+            font-size: .49rem;
+            color: rgba(0, 229, 255, .3);
+            letter-spacing: .14em;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--bd)
         }
 
-        .bs {
-            margin-bottom: 14px;
-            padding: 12px;
-            background: rgba(255, 255, 255, .018);
-            border: 1px solid rgba(255, 255, 255, .04);
-            border-left: 3px solid var(--g)
+        .sec {
+            margin-bottom: 11px;
+            padding: 11px;
+            border: 1px solid var(--bd);
+            background: rgba(255, 255, 255, .01);
+            position: relative
         }
 
-        .bs.rd {
-            border-left-color: var(--r)
+        .sec::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px
         }
 
-        .bs.bl {
-            border-left-color: var(--b)
+        .sec.sg::before {
+            background: var(--g);
+            box-shadow: 0 0 7px var(--g)
         }
 
-        .bs.pu {
-            border-left-color: var(--p)
+        .sec.sr::before {
+            background: var(--r);
+            box-shadow: 0 0 7px var(--r)
         }
 
-        .bs.or {
-            border-left-color: var(--o)
+        .sec.sb::before {
+            background: var(--b);
+            box-shadow: 0 0 7px var(--b)
         }
 
-        .bst {
+        .sec.sp::before {
+            background: var(--p);
+            box-shadow: 0 0 7px var(--p)
+        }
+
+        .sec.sa::before {
+            background: var(--am);
+            box-shadow: 0 0 7px var(--am)
+        }
+
+        .st {
             font-family: var(--hud);
-            font-size: .62rem;
+            font-size: .57rem;
             font-weight: 700;
-            letter-spacing: .11em;
+            letter-spacing: .1em;
             margin-bottom: 7px;
             display: flex;
             align-items: center;
@@ -997,9 +1554,9 @@
 
         .sc {
             font-family: var(--body);
-            font-size: clamp(.68rem, 1.8vw, .84rem);
-            line-height: 1.7;
-            color: rgba(200, 220, 240, .78)
+            font-size: clamp(.65rem, 1.6vw, .79rem);
+            line-height: 1.74;
+            color: rgba(215, 232, 252, .72)
         }
 
         .sc strong {
@@ -1015,103 +1572,137 @@
             color: var(--r)
         }
 
-        table.ct2 {
+        table.dt {
             width: 100%;
             border-collapse: collapse;
             margin-top: 7px
         }
 
-        table.ct2 th {
+        table.dt th {
             font-family: var(--hud);
-            font-size: .54rem;
+            font-size: .48rem;
             letter-spacing: .07em;
             color: var(--b);
             padding: 4px 7px;
-            background: rgba(0, 212, 255, .045);
-            border: 1px solid rgba(0, 212, 255, .09);
+            background: rgba(0, 229, 255, .026);
+            border: 1px solid var(--bd);
             text-align: left
         }
 
-        table.ct2 td {
+        table.dt td {
             font-family: var(--body);
-            font-size: clamp(.6rem, 1.5vw, .76rem);
+            font-size: clamp(.57rem, 1.4vw, .71rem);
             padding: 4px 7px;
-            border: 1px solid rgba(255, 255, 255, .035);
-            color: rgba(200, 220, 240, .77)
+            border: 1px solid rgba(255, 255, 255, .024);
+            color: rgba(215, 232, 252, .71)
         }
 
-        table.ct2 tr:nth-child(even) td {
-            background: rgba(255, 255, 255, .018)
+        table.dt tr:nth-child(even) td {
+            background: rgba(255, 255, 255, .01)
         }
 
         .qq {
             font-family: var(--body);
-            font-size: clamp(.82rem, 2.1vw, 1rem);
+            font-size: clamp(.79rem, 2vw, .95rem);
             color: #fff;
-            line-height: 1.6;
-            margin-bottom: 14px;
-            padding: 11px;
-            background: rgba(0, 212, 255, .035);
-            border-left: 3px solid var(--b)
+            line-height: 1.65;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(0, 229, 255, .025);
+            border-left: 2px solid rgba(0, 229, 255, .24)
         }
 
-        .qc {
+        .qm {
             font-family: var(--mono);
-            font-size: .58rem;
-            color: rgba(0, 212, 255, .48);
-            margin-bottom: 11px
+            font-size: .48rem;
+            color: rgba(0, 229, 255, .38);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between
         }
 
         .qo {
             display: block;
             width: 100%;
-            padding: 10px 13px;
-            margin: 5px 0;
-            background: rgba(255, 255, 255, .025);
-            border: 1px solid rgba(255, 255, 255, .07);
-            color: rgba(200, 220, 240, .88);
+            padding: 9px 12px;
+            margin: 4px 0;
+            background: rgba(255, 255, 255, .015);
+            border: 1px solid var(--bd);
+            color: rgba(215, 232, 252, .82);
             font-family: var(--body);
-            font-size: clamp(.7rem, 1.8vw, .88rem);
+            font-size: clamp(.67rem, 1.6vw, .83rem);
             text-align: left;
             cursor: pointer;
-            transition: all .22s
+            transition: all .18s;
+            position: relative;
+            overflow: hidden
+        }
+
+        .qo::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--b2);
+            transition: width .2s
         }
 
         .qo:hover:not(:disabled) {
-            background: rgba(0, 212, 255, .07);
-            border-color: rgba(0, 212, 255, .3);
-            color: #fff;
-            transform: translateX(3px)
+            border-color: rgba(0, 229, 255, .22);
+            color: #fff
+        }
+
+        .qo:hover:not(:disabled)::before {
+            width: 100%
+        }
+
+        .qo span {
+            position: relative;
+            z-index: 1
         }
 
         .qo.ok {
-            background: rgba(0, 255, 128, .12) !important;
+            background: rgba(0, 255, 170, .07) !important;
             border-color: var(--g) !important;
             color: var(--g) !important
         }
 
         .qo.no {
-            background: rgba(255, 45, 85, .12) !important;
+            background: rgba(255, 45, 85, .07) !important;
             border-color: var(--r) !important;
             color: var(--r) !important
         }
 
         .qex {
             font-family: var(--body);
-            font-size: .74rem;
-            color: rgba(0, 255, 204, .78);
-            background: rgba(0, 255, 204, .04);
-            border: 1px solid rgba(0, 255, 204, .12);
-            padding: 8px 11px;
-            margin-top: 7px;
+            font-size: .69rem;
+            color: rgba(0, 255, 170, .68);
+            background: rgba(0, 255, 170, .03);
+            border: 1px solid rgba(0, 255, 170, .08);
+            padding: 8px 10px;
+            margin-top: 6px;
             display: none;
-            line-height: 1.56
+            line-height: 1.6
+        }
+
+        .pb {
+            height: 1px;
+            background: var(--bd);
+            margin-bottom: 10px
+        }
+
+        .pbf {
+            height: 100%;
+            background: linear-gradient(90deg, var(--g), var(--b));
+            transition: width .4s
         }
 
         .sbig {
             font-family: var(--hud);
-            font-size: clamp(2rem, 5.5vw, 3.4rem);
-            font-weight: 900;
+            font-size: clamp(2.3rem, 6.5vw, 3.8rem);
+            font-weight: 800;
             background: linear-gradient(135deg, var(--g), var(--b));
             -webkit-background-clip: text;
             background-clip: text;
@@ -1120,62 +1711,24 @@
 
         .slbl {
             font-family: var(--mono);
-            font-size: .62rem;
-            color: rgba(0, 212, 255, .5);
-            letter-spacing: .15em;
-            margin-top: 3px
-        }
-
-        .mc {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            padding: 11px 13px;
-            margin: 5px 0;
-            background: rgba(0, 212, 255, .025);
-            border: 1px solid rgba(0, 212, 255, .08);
-            transition: all .25s
-        }
-
-        .mc:hover {
-            background: rgba(0, 212, 255, .065);
-            border-color: rgba(0, 212, 255, .2);
-            transform: translateX(3px)
-        }
-
-        .mn {
-            font-family: var(--hud);
-            font-size: 1rem;
-            font-weight: 900;
-            color: rgba(0, 212, 255, .25);
-            min-width: 24px
-        }
-
-        .mi .nm {
-            font-family: var(--body);
-            font-size: clamp(.82rem, 2.1vw, .95rem);
-            color: #fff;
-            font-weight: 600
-        }
-
-        .mi .nx {
-            font-family: var(--mono);
-            font-size: .58rem;
-            color: rgba(0, 212, 255, .42)
+            font-size: .55rem;
+            color: rgba(0, 229, 255, .38);
+            letter-spacing: .18em;
+            margin-top: 4px
         }
 
         .nl {
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, .035);
+            padding: 7px 0;
+            border-bottom: 1px solid var(--bd);
             font-family: var(--body);
-            font-size: clamp(.68rem, 1.7vw, .84rem);
-            line-height: 1.72;
-            color: rgba(200, 220, 240, .8)
+            font-size: clamp(.64rem, 1.6vw, .79rem);
+            line-height: 1.78;
+            color: rgba(215, 232, 252, .73)
         }
 
         .ns {
             font-family: var(--mono);
-            font-size: .54rem;
+            font-size: .47rem;
             color: var(--g);
             letter-spacing: .1em;
             margin-bottom: 3px
@@ -1185,295 +1738,195 @@
             color: var(--b)
         }
 
-        .btnc {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 26px;
-            height: 26px;
-            background: rgba(255, 255, 255, .03);
-            border: 1px solid rgba(255, 255, 255, .08);
-            color: rgba(255, 255, 255, .4);
-            font-size: .9rem;
-            cursor: pointer;
+        .mbr {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all .2s;
-            line-height: 1
+            gap: 10px;
+            padding: 9px;
+            margin: 3px 0;
+            background: rgba(255, 255, 255, .014);
+            border: 1px solid var(--bd);
+            transition: all .18s
         }
 
-        .btnc:hover {
-            background: rgba(255, 45, 85, .12);
-            border-color: var(--r);
-            color: var(--r)
+        .mbr:hover {
+            background: var(--b2);
+            border-color: rgba(0, 229, 255, .12)
+        }
+
+        .mn {
+            font-family: var(--hud);
+            font-size: .86rem;
+            font-weight: 800;
+            color: rgba(0, 229, 255, .13);
+            min-width: 22px
+        }
+
+        .mm {
+            font-family: var(--body);
+            font-size: clamp(.74rem, 1.8vw, .86rem);
+            color: #fff;
+            font-weight: 600
+        }
+
+        .mx {
+            font-family: var(--mono);
+            font-size: .45rem;
+            color: rgba(0, 229, 255, .34)
         }
 
         .chip {
             display: inline-flex;
             font-family: var(--mono);
-            font-size: .52rem;
-            padding: 2px 5px;
-            margin: 2px
+            font-size: .45rem;
+            padding: 2px 6px;
+            margin: 2px;
+            border: 1px solid
         }
 
-        .cg {
-            background: rgba(0, 255, 204, .07);
-            border: 1px solid rgba(0, 255, 204, .18);
-            color: var(--g)
+        .cg2 {
+            color: var(--g);
+            border-color: rgba(0, 255, 170, .17);
+            background: rgba(0, 255, 170, .04)
         }
 
         .cb2 {
-            background: rgba(0, 212, 255, .08);
-            border: 1px solid rgba(0, 212, 255, .2);
-            color: var(--b)
+            color: var(--b);
+            border-color: rgba(0, 229, 255, .17);
+            background: rgba(0, 229, 255, .04)
         }
 
-        .cp {
-            background: rgba(168, 85, 247, .08);
-            border: 1px solid rgba(168, 85, 247, .2);
-            color: var(--p)
+        .cp2 {
+            color: var(--p);
+            border-color: rgba(191, 95, 255, .17);
+            background: rgba(191, 95, 255, .04)
         }
 
-        .cr {
-            background: rgba(255, 45, 85, .08);
-            border: 1px solid rgba(255, 45, 85, .2);
+        .cr2 {
+            color: var(--r);
+            border-color: rgba(255, 45, 85, .17);
+            background: rgba(255, 45, 85, .04)
+        }
+
+        .btnc {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 25px;
+            height: 25px;
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            color: var(--td);
+            font-size: .78rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .18s;
+            line-height: 1
+        }
+
+        .btnc:hover {
+            background: var(--r2);
+            border-color: var(--r);
             color: var(--r)
         }
 
         .bnn {
             font-family: var(--hud);
-            font-size: clamp(.46rem, 1.2vw, .63rem);
+            font-size: clamp(.41rem, .98vw, .57rem);
             font-weight: 700;
             letter-spacing: .14em;
             padding: 7px 14px;
-            background: var(--bg);
-            border: 1px solid var(--brd);
-            color: var(--b);
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            color: var(--td);
             cursor: pointer;
-            clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
-            transition: all .3s;
-            white-space: nowrap;
-            pointer-events: all
+            transition: all .22s;
+            white-space: nowrap
         }
 
         .bnn:hover {
-            background: rgba(0, 212, 255, .08);
             border-color: var(--b);
-            color: #fff
+            color: #fff;
+            background: var(--b2)
         }
 
-        /* ═══════════════════════════════════
-   BREAKPOINTS
-═══════════════════════════════════ */
-
-        /* ── Large desktop ─────────────────── */
-        @media(min-width:1200px) {
-            :root {
-                --panel-w: 240px;
-                --bpm-fs: 2rem;
-                --magn-fs: 1.8rem
-            }
-        }
-
-        /* ── Standard desktop / laptop ──────── */
-        @media(min-width:901px) and (max-width:1199px) {
-            :root {
-                --panel-w: 200px
-            }
-        }
-
-        /* ── Small desktop / tablet landscape ─ */
         @media(max-width:900px) {
             :root {
-                --panel-w: 170px;
-                --topbar-h: 40px;
-                --nav-h: 44px;
-                --card-p: 8px 10px
+                --pw: 162px;
+                --th: 43px;
+                --nh: 47px
             }
         }
 
-        /* ── Tablet portrait ─────────────────── */
         @media(max-width:768px) {
             :root {
-                --panel-w: 150px;
-                --topbar-h: 38px;
-                --nav-h: 46px;
-                --card-p: 7px 9px
+                --pw: 136px;
+                --th: 39px;
+                --nh: 44px
             }
 
-            .top-right {
-                gap: 8px
-            }
-
-            .bt {
+            .badge:not(:first-child) {
                 display: none
-            }
-
-            /* hide hint text to save space */
-            .ecg-svg {
-                height: 22px
             }
         }
 
-        /* ── Large phone landscape / small tablet ─ */
         @media(max-width:600px) {
             :root {
-                --panel-w: 130px;
-                --topbar-h: 36px;
-                --nav-h: 44px;
-                --card-p: 6px 8px
+                --pw: 108px;
+                --th: 35px;
+                --nh: 41px
             }
 
             .cn {
-                width: 22px;
-                height: 22px
+                width: 16px;
+                height: 16px
             }
 
-            .xhair {
-                width: 38px;
-                height: 38px
+            .fp {
+                width: min(148px, 41vw);
+                padding: 7px 8px
             }
 
-            .top-title {
-                max-width: 50vw;
-                font-size: .42rem;
-                letter-spacing: .07em
+            .fp-desc {
+                display: none
+            }
+
+            .fp-v {
+                right: 4px
             }
         }
 
-        /* ── Phone portrait ──────────────────── */
         @media(max-width:480px) {
             :root {
-                --panel-w: 118px;
-                --topbar-h: 34px;
-                --nav-h: 42px;
-                --card-p: 5px 7px
+                --pw: 98px;
+                --th: 32px;
+                --nh: 39px
+            }
+
+            .bn {
+                padding: 4px 5px;
+                letter-spacing: .06em
             }
 
             .bnav {
                 gap: 2px
             }
-
-            .bn {
-                padding: 5px 7px;
-                letter-spacing: .08em
-            }
-
-            .dr {
-                padding: 1px 0
-            }
-
-            .vbw {
-                margin: 3px 0
-            }
-
-            .ch {
-                margin-bottom: 5px;
-                padding-bottom: 4px
-            }
         }
 
-        /* ── Very small phone ────────────────── */
-        @media(max-width:360px) {
-            :root {
-                --panel-w: 102px;
-                --topbar-h: 32px;
-                --nav-h: 40px;
-                --card-p: 5px 6px
-            }
-
-            .bn {
-                padding: 4px 5px;
-                font-size: .4rem
-            }
-
-            .ct {
-                font-size: .44rem
-            }
-        }
-
-        /* ── Landscape phone (short viewport) ── */
         @media(max-height:480px) {
             :root {
-                --topbar-h: 32px;
-                --nav-h: 36px;
-                --card-p: 5px 8px;
-                --panel-w: 140px
+                --th: 28px;
+                --nh: 32px;
+                --pw: 118px
             }
 
-            .bt {
+            .mt,
+            .bpu,
+            .ctg {
                 display: none
             }
-
-            .vbw {
-                display: none
-            }
-
-            .bpms {
-                display: none
-            }
-
-            .ecg-svg {
-                height: 18px
-            }
-
-            .xhair {
-                display: none
-            }
-        }
-
-        /* ── Very short landscape (e.g. SE landscape) ── */
-        @media(max-height:380px) {
-            :root {
-                --topbar-h: 28px;
-                --nav-h: 32px;
-                --panel-w: 120px
-            }
-
-            .cn {
-                display: none
-            }
-
-            .dr+.dr {
-                display: none
-            }
-
-            /* show only first data row */
-        }
-
-        /* Floating panel responsive */
-        @media(max-width:600px) {
-            .info-float {
-                width: min(170px, 44vw);
-                padding: 8px 10px
-            }
-
-            .info-float-artery {
-                left: 50%;
-                transform: translateX(-25%)
-            }
-
-            .info-float-vein {
-                right: 6px
-            }
-
-            .if-desc {
-                display: none
-            }
-        }
-
-        @media(max-width:400px) {
-            .info-float {
-                width: min(150px, 46vw);
-                padding: 7px 9px
-            }
-
-            .info-float-vein {
-                display: none
-            }
-
-            /* too crowded on very small screens, use toggle */
         }
     </style>
 </head>
@@ -1483,24 +1936,43 @@
     <audio id="sOk" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
     <audio id="sBad" src="https://assets.mixkit.co/active_storage/sfx/2959/2959-preview.mp3"></audio>
 
-    <canvas id="bg"></canvas>
+    <!-- SINGLE main canvas -->
+    <canvas id="c-main"></canvas>
     <div class="scanlines"></div>
     <div class="vignette"></div>
+    <div id="beat"></div>
 
-    <!-- BOOT -->
-    <div id="boot">
-        <div style="text-align:center;padding:0 16px">
-            <div class="logo">MICRO-LAB</div>
-            <div class="boot-sub">BETTA BIO-SCANNER // 3D EDITION v13.0</div>
-            <div class="boot-sub2">CIRCULATORY SYSTEM ANALYSIS // BETTA SPLENDENS</div>
-        </div>
-        <div class="bar-wrap">
-            <div class="bar-bg">
-                <div class="bar-fill" id="bf"></div>
+    <!-- INTRO -->
+    <div id="intro">
+        <canvas id="c-dna"></canvas>
+        <div class="sline"></div>
+        <div class="ic">
+            <div class="gt" data-t="MICRO-LAB">MICRO-LAB</div>
+            <div class="isub">BETTA BIO-SCANNER // v17 ULTIMATE EDITION</div>
+            <div class="isub2">3D FISH BODY // INTERACTIVE SIM // CELLULAR ZOOM // SOUND REACTIVE</div>
+            <div class="iring">
+                <svg viewBox="0 0 72 72" fill="none">
+                    <circle cx="36" cy="36" r="31" stroke="rgba(0,229,255,.1)" stroke-width="1" />
+                    <circle cx="36" cy="36" r="31" stroke="url(#rg)" stroke-width="1.4" stroke-dasharray="36 160"
+                        stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="rg" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#00e5ff" />
+                            <stop offset="1" stop-color="#00ffaa" stop-opacity="0" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="irc"></div>
             </div>
-            <div class="boot-log" id="bl">INITIALIZING...</div>
+            <div class="ibar">
+                <div class="ibt">
+                    <div class="ibf" id="ibf"></div>
+                </div>
+                <div class="ilog" id="ilog">INITIALIZING...</div>
+                <div class="ipct" id="ipct">000</div>
+            </div>
+            <button class="ilbtn" id="launch">⬡ INITIALIZE SCAN</button>
         </div>
-        <button class="btn-start" id="sb">&#x2B21; INITIALIZE SCAN &#x2B21;</button>
     </div>
 
     <!-- HUD -->
@@ -1509,245 +1981,273 @@
         <div class="cn cn-tr"></div>
         <div class="cn cn-bl"></div>
         <div class="cn cn-br"></div>
-
-        <!-- TOPBAR -->
         <div class="topbar">
-            <div class="top-title">&#x2B21; MICRO-LAB // BETTA SPLENDENS // CIRCULATORY ANALYSIS</div>
-            <div class="top-right">
-                <span><span class="dot">&#x25CF;</span> ACTIVE</span>
-                <span id="clk">--:--:--</span>
-                <span>SYS:<span style="color:var(--g)">OK</span></span>
+            <div class="tl">
+                <div class="hm"><svg viewBox="0 0 27 27" fill="none">
+                        <polygon points="13.5,1.5 24,8 24,20 13.5,26.5 3,20 3,8" stroke="rgba(0,229,255,.38)"
+                            stroke-width=".85" fill="rgba(0,229,255,.03)" />
+                        <polygon points="13.5,5.5 20.5,10 20.5,18 13.5,22.5 6.5,18 6.5,10" stroke="rgba(0,255,170,.19)"
+                            stroke-width=".65" fill="none" />
+                        <circle cx="13.5" cy="13.5" r="2.3" fill="rgba(0,229,255,.6)" />
+                    </svg></div>
+                <div class="ttl">MICRO-LAB v17 // <em>BETTA SPLENDENS</em> // 3D CIRCULATORY</div>
+            </div>
+            <div class="tr">
+                <div class="badge">
+                    <div class="pdot"></div>LIVE
+                </div>
+                <div id="clk">--:--:--</div>
             </div>
         </div>
-
-        <!-- MAIN AREA -->
-        <div class="main-area">
-            <!-- LEFT PANEL -->
+        <div class="main">
             <div class="pl">
-                <div class="card rd" data-tip="artery">
-                    <div class="ch"><span class="ct" style="color:var(--r)">ARTERY</span><span class="cb"
-                            style="color:var(--r);border-color:rgba(255,45,85,.25)">ACTIVE</span></div>
-                    <div class="dr"><span class="dl">DIR</span><span class="dv dr2">HEAD&#x2192;TAIL</span></div>
-                    <div class="dr"><span class="dl">O&#x2082;</span><span class="dv dw">HIGH &#x2191;</span></div>
-                    <div class="dr"><span class="dl">WALL</span><span class="dv dr2">THICK</span></div>
-                    <div class="vbw">
-                        <div class="vlr"><span>PRESSURE</span><span style="color:var(--r)">85%</span></div>
-                        <div class="vb">
-                            <div class="vf fr" style="width:85%"></div>
+                <div class="card c-r" data-tip="artery">
+                    <div class="ch"><span class="ct" style="color:var(--r)">ARTERY</span><span class="ctg"
+                            style="color:var(--r);border-color:rgba(255,45,85,.17)">ACTIVE</span></div>
+                    <div class="row"><span class="rl">DIRECTION</span><span class="rv r">HEAD→TAIL</span></div>
+                    <div class="row"><span class="rl">O₂ LEVEL</span><span class="rv w">HIGH ↑</span></div>
+                    <div class="row"><span class="rl">WALL</span><span class="rv r">THICK ×3</span></div>
+                    <div class="mt">
+                        <div class="ml"><span>PRESSURE</span><span style="color:var(--r)">85%</span></div>
+                        <div class="mtr">
+                            <div class="mf r" style="width:85%"></div>
                         </div>
                     </div>
-                    <div class="bt">Hover เพื่อดูข้อมูล</div>
                 </div>
-                <div class="card gr" data-tip="cap">
-                    <div class="ch"><span class="ct">CAPILLARY</span><span class="cb">GAS SWAP</span></div>
-                    <div class="dr"><span class="dl">SIZE</span><span class="dv dw">5&ndash;10&#x3BC;m</span></div>
-                    <div class="dr"><span class="dl">FN</span><span class="dv dg">GAS EX.</span></div>
-                    <div class="dr"><span class="dl">WALL</span><span class="dv dg">1 CELL</span></div>
-                    <div class="vbw">
-                        <div class="vlr"><span>EXCHANGE</span><span style="color:var(--g)">92%</span></div>
-                        <div class="vb">
-                            <div class="vf fg" style="width:92%"></div>
+                <div class="card c-g" data-tip="cap">
+                    <div class="ch"><span class="ct" style="color:var(--g)">CAPILLARY</span><span class="ctg"
+                            style="color:var(--g);border-color:rgba(0,255,170,.17)">GAS EX.</span></div>
+                    <div class="row"><span class="rl">DIAMETER</span><span class="rv w">5–10 μm</span></div>
+                    <div class="row"><span class="rl">FUNCTION</span><span class="rv g">O₂/CO₂</span></div>
+                    <div class="row"><span class="rl">WALL</span><span class="rv g">1 CELL</span></div>
+                    <div class="mt">
+                        <div class="ml"><span>EXCHANGE</span><span style="color:var(--g)">92%</span></div>
+                        <div class="mtr">
+                            <div class="mf g" style="width:92%"></div>
                         </div>
                     </div>
-                    <div class="bt">O&#x2082;/CO&#x2082; exchange zone</div>
                 </div>
-                <div class="card bl">
-                    <div class="ch"><span class="ct">ZOOM</span><span class="cb">LIVE</span></div>
-                    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:4px 0 2px">
-                        <div class="magn" id="mg">000</div>
-                        <div class="magu">&#xD7; MAG</div>
+                <div class="card c-b">
+                    <div class="ch"><span class="ct" style="color:var(--b)">MAGNIFY</span><span class="ctg">LIVE</span>
                     </div>
-                    <div class="vb">
-                        <div class="vf fb" id="mb" style="width:0%"></div>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:4px 0 3px">
+                        <div class="zn" id="mg">000</div>
+                        <div class="zu">× MAG</div>
+                    </div>
+                    <div class="mtr">
+                        <div class="mf b" id="mb" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="fctrl">
+                    <div class="fc-t">⚙ FLOW CONTROL</div>
+                    <div class="fc-r"><span class="fc-l">SPEED</span><input type="range" class="fc-s" id="sl-spd"
+                            min="1" max="100" value="50"><span class="fc-v" id="sv-spd">50</span></div>
+                    <div class="fc-r"><span class="fc-l">RBC DENSITY</span><input type="range" class="fc-s" id="sl-rbc"
+                            min="5" max="100" value="50"><span class="fc-v" id="sv-rbc">50</span></div>
+                    <div class="fc-r"><span class="fc-l">VISCOSITY</span><input type="range" class="fc-s" id="sl-vis"
+                            min="0" max="100" value="25"><span class="fc-v" id="sv-vis">25</span></div>
+                    <div class="fc-btns">
+                        <div class="fc-btn" id="btn-pau" onclick="togglePause()">⏸ PAUSE</div>
+                        <div class="fc-btn dan" id="btn-trb" onclick="toggleTurbo()">⚡ TURBO</div>
+                        <div class="fc-btn ok" id="btn-mzz" onclick="openMZ()">🔬 ZOOM</div>
                     </div>
                 </div>
             </div>
-
-            <!-- CANVAS WRAP -->
-            <div class="canvas-wrap">
-                <div class="xhair">
-                    <div class="xring"></div>
+            <div class="cw">
+                <div class="xh">
+                    <div class="xr"></div>
                 </div>
             </div>
-
-            <!-- RIGHT PANEL -->
             <div class="pr">
-                <div class="card rd">
-                    <div class="ch"><span class="ct" style="color:var(--r)">CARDIAC</span><span class="cb"
-                            style="color:var(--r);border-color:rgba(255,45,85,.25)">LIVE</span></div>
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <div class="card c-r">
+                    <div class="ch"><span class="ct" style="color:var(--r)">CARDIAC</span><span class="ctg"
+                            style="color:var(--r);border-color:rgba(255,45,85,.17)">LIVE</span></div>
+                    <div class="bpr">
                         <div>
-                            <div class="bpm-num" id="bv">72</div>
-                            <div class="bpms">BPM</div>
+                            <div class="bpn" id="bv">72</div>
+                            <div class="bpu">BPM</div>
                         </div>
-                        <svg class="ecg-svg" viewBox="0 0 400 30" preserveAspectRatio="none">
-                            <polyline
-                                points="0,15 50,15 68,3 78,27 90,1 104,26 118,15 200,15 250,15 268,3 278,27 290,1 304,26 318,15 400,15"
-                                stroke="#ff2d55" stroke-width="1.5" fill="none" opacity=".82">
-                                <animateTransform attributeName="transform" type="translate" from="0,0" to="-200,0"
-                                    dur="1.8s" repeatCount="indefinite" />
-                            </polyline>
-                        </svg>
+                        <div class="ecg"><svg viewBox="0 0 400 26" preserveAspectRatio="none">
+                                <polyline
+                                    points="0,13 50,13 68,2 78,24 90,1 104,23 118,13 200,13 250,13 268,2 278,24 290,1 304,23 318,13 400,13"
+                                    stroke="var(--r)" stroke-width="1.2" fill="none" opacity=".68">
+                                    <animateTransform attributeName="transform" type="translate" from="0,0" to="-200,0"
+                                        dur="1.65s" repeatCount="indefinite" />
+                                </polyline>
+                            </svg></div>
                     </div>
-                    <div class="dr"><span class="dl">SYS</span><span class="dv dr2">120 mmHg</span></div>
-                    <div class="dr"><span class="dl">DIA</span><span class="dv dw">80 mmHg</span></div>
-                    <div class="dr"><span class="dl">TEMP</span><span class="dv db" id="tmp">26.0&#xB0;C</span></div>
+                    <div class="row"><span class="rl">SYSTOLIC</span><span class="rv r">120 mmHg</span></div>
+                    <div class="row"><span class="rl">DIASTOLIC</span><span class="rv w">80 mmHg</span></div>
+                    <div class="row"><span class="rl">TEMP</span><span class="rv b" id="tmp">26.0°C</span></div>
                 </div>
-                <div class="card bl" data-tip="vein">
-                    <div class="ch"><span class="ct">VEIN</span><span class="cb">RETURN</span></div>
-                    <div class="dr"><span class="dl">DIR</span><span class="dv db">TAIL&#x2192;HEAD</span></div>
-                    <div class="dr"><span class="dl">CO&#x2082;</span><span class="dv dw">HIGH &#x2191;</span></div>
-                    <div class="dr"><span class="dl">VALVE</span><span class="dv db">YES &#x2713;</span></div>
-                    <div class="vbw">
-                        <div class="vlr"><span>CO&#x2082; LOAD</span><span style="color:var(--b)">78%</span></div>
-                        <div class="vb">
-                            <div class="vf fb" style="width:78%"></div>
+                <div class="card c-b" data-tip="vein">
+                    <div class="ch"><span class="ct" style="color:var(--b)">VEIN</span><span class="ctg">RETURN</span>
+                    </div>
+                    <div class="row"><span class="rl">DIRECTION</span><span class="rv b">TAIL→HEAD</span></div>
+                    <div class="row"><span class="rl">CO₂ LOAD</span><span class="rv w">HIGH ↑</span></div>
+                    <div class="row"><span class="rl">VALVE</span><span class="rv b">YES ✓</span></div>
+                    <div class="mt">
+                        <div class="ml"><span>CO₂</span><span style="color:var(--b)">78%</span></div>
+                        <div class="mtr">
+                            <div class="mf b" style="width:78%"></div>
                         </div>
                     </div>
-                    <div class="bt">นำเลือดกลับหัวใจ</div>
                 </div>
-                <div class="card pu">
-                    <div class="ch"><span class="ct" style="color:var(--p)">STATUS</span><span class="cb"
-                            style="color:var(--p);border-color:rgba(168,85,247,.25)">OK</span></div>
-                    <div class="dr"><span class="dl">STABILITY</span><span class="dv dg">98.7%</span></div>
-                    <div class="dr"><span class="dl">RBC</span><span class="dv dw" id="rbc">--</span></div>
-                    <div class="dr"><span class="dl">O&#x2082; SAT</span><span class="dv dg">97%</span></div>
-                    <div class="vbw">
-                        <div class="vlr"><span>HEALTH</span><span style="color:var(--p)">98%</span></div>
-                        <div class="vb">
-                            <div class="vf"
-                                style="width:98%;background:linear-gradient(90deg,#6d28d9,#a855f7);box-shadow:0 0 5px #a855f7">
-                            </div>
+                <div class="card c-p">
+                    <div class="ch"><span class="ct" style="color:var(--p)">STATUS</span><span class="ctg"
+                            style="color:var(--p);border-color:rgba(191,95,255,.17)">OK</span></div>
+                    <div class="row"><span class="rl">STABILITY</span><span class="rv g">98.7%</span></div>
+                    <div class="row"><span class="rl">RBC COUNT</span><span class="rv w" id="rbc">--</span></div>
+                    <div class="row"><span class="rl">O₂ SAT</span><span class="rv g">97%</span></div>
+                    <div class="mt">
+                        <div class="ml"><span>HEALTH</span><span style="color:var(--p)">98%</span></div>
+                        <div class="mtr">
+                            <div class="mf p" style="width:98%"></div>
                         </div>
+                    </div>
+                </div>
+                <div class="card c-am">
+                    <div class="ch"><span class="ct" style="color:var(--am)">SOUND REACT</span><span class="ctg"
+                            id="sr-status">OFF</span></div>
+                    <div class="row"><span class="rl">BEAT SYNC</span><span class="rv" style="color:var(--am)"
+                            id="sr-bpm">--</span></div>
+                    <div class="mt">
+                        <div class="ml"><span>AMPLITUDE</span><span style="color:var(--am)" id="sr-amp">0%</span></div>
+                        <div class="mtr">
+                            <div class="mf am" id="sr-bar" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="fc-btns" style="margin-top:6px">
+                        <div class="fc-btn" id="btn-mic" onclick="toggleMic()">🎙 MIC INPUT</div>
+                        <div class="fc-btn" id="btn-beat" onclick="toggleBeat()">🎵 AUTO BEAT</div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- BOTTOM NAV -->
         <div class="bnav">
-            <button class="bn on" onclick="Nav('sim',this)">&#x2B21; SIM</button>
-            <button class="bn" onclick="Nav('bio',this)">&#x1F52C; BIO</button>
-            <button class="bn" onclick="Nav('quiz',this)">&#x26A1; ASSESSMENT</button>
-            <button class="bn" onclick="Nav('nar',this)">&#x1F399; SCRIPT</button>
-            <button class="bn" onclick="Nav('mem',this)">&#x25C8; TEAM</button>
-            <button class="bn" id="btn-info" onclick="toggleInfoMode(this)">&#x2139; INFO</button>
-            <button class="bn" onclick="toggleAudio()" id="abtn">&#x1F50A; AUDIO</button>
+            <button class="bn on" onclick="Nav('sim',this)"><span>⬡ SIM</span></button>
+            <button class="bn" onclick="Nav('bio',this)"><span>🔬 BIO</span></button>
+            <button class="bn" onclick="Nav('quiz',this)"><span>⚡ ASSESSMENT</span></button>
+            <button class="bn" onclick="Nav('nar',this)"><span>🎙 SCRIPT</span></button>
+            <button class="bn" onclick="Nav('mem',this)"><span>◈ TEAM</span></button>
+            <button class="bn" id="btn-info" onclick="toggleInfo(this)"><span>ⓘ INFO</span></button>
+            <button class="bn" onclick="toggleAudio()" id="abtn"><span>🔊 AUDIO</span></button>
         </div>
     </div>
 
-    <!-- TOOLTIP -->
-    <div class="tip-box" id="tip">
-        <div class="tip-title" id="tip-title"></div>
-        <div id="tip-body"></div>
-    </div>
-
-    <!-- VESSEL HOVER LABEL -->
-    <div class="vessel-hover-label" id="vhlabel"></div>
-
-    <!-- PANEL TOGGLE BUTTONS -->
-    <div id="panel-toggles">
-        <button class="panel-toggle active" id="tog-artery" onclick="togglePanel('artery',this)">&#x1F534;
-            ARTERY</button>
-        <button class="panel-toggle active" id="tog-cap" onclick="togglePanel('cap',this)">&#x1F7E2; CAPILLARY</button>
-        <button class="panel-toggle active" id="tog-vein" onclick="togglePanel('vein',this)">&#x1F535; VEIN</button>
-        <button class="panel-toggle" id="tog-dir" onclick="togglePanel('dir',this)">&#x27A1; DIRECTION</button>
-    </div>
-
-    <!-- FLOATING ARTERY PANEL -->
-    <div class="info-float info-float-artery hidden" id="fp-artery">
-        <div class="if-title" style="color:var(--r)"><span>&#x1F534; ARTERY</span><span class="if-close"
-                onclick="togglePanel('artery',document.getElementById('tog-artery'))">&#x2715;</span></div>
-        <div class="if-row"><span class="if-lbl">FLOW</span><span class="if-val dr2">HEAD &#x2192; TAIL</span></div>
-        <div class="if-row"><span class="if-lbl">O&#x2082;</span><span class="if-val dw">สูง (Rich)</span></div>
-        <div class="if-row"><span class="if-lbl">PRESSURE</span><span class="if-val dr2">สูงมาก</span></div>
-        <div class="if-row"><span class="if-lbl">WALL</span><span class="if-val dw">หนา 3 ชั้น</span></div>
-        <div class="if-desc"><strong>หลอดเลือดแดง</strong> — นำเลือด O&#x2082; สูงออกจากหัวใจ ผนังหนายืดหยุ่นสูง</div>
-    </div>
-
-    <!-- FLOATING CAPILLARY PANEL -->
-    <div class="info-float info-float-cap hidden" id="fp-cap">
-        <div class="if-title" style="color:var(--g)"><span>&#x1F7E2; CAPILLARY</span><span class="if-close"
-                onclick="togglePanel('cap',document.getElementById('tog-cap'))">&#x2715;</span></div>
-        <div class="if-row"><span class="if-lbl">SIZE</span><span class="if-val dg">5–10 &#x3BC;m</span></div>
-        <div class="if-row"><span class="if-lbl">WALL</span><span class="if-val dg">1 ชั้นเซลล์</span></div>
-        <div class="if-row"><span class="if-lbl">SPEED</span><span class="if-val dg">ช้าที่สุด</span></div>
-        <div class="if-row"><span class="if-lbl">FN</span><span class="if-val dw">GAS EXCHANGE</span></div>
-        <div class="if-desc"><strong>หลอดเลือดฝอย</strong> — แลก O&#x2082;/CO&#x2082; ผนัง 1 ชั้นบางมาก</div>
-    </div>
-
-    <!-- FLOATING VEIN PANEL -->
-    <div class="info-float info-float-vein hidden" id="fp-vein">
-        <div class="if-title" style="color:var(--b)"><span>&#x1F535; VEIN</span><span class="if-close"
-                onclick="togglePanel('vein',document.getElementById('tog-vein'))">&#x2715;</span></div>
-        <div class="if-row"><span class="if-lbl">FLOW</span><span class="if-val db">TAIL &#x2192; HEAD</span></div>
-        <div class="if-row"><span class="if-lbl">CO&#x2082;</span><span class="if-val dw">สูง (Rich)</span></div>
-        <div class="if-row"><span class="if-lbl">PRESSURE</span><span class="if-val db">ต่ำมาก</span></div>
-        <div class="if-row"><span class="if-lbl">VALVE</span><span class="if-val db">มี &#x2713;</span></div>
-        <div class="if-desc"><strong>หลอดเลือดดำ</strong> — นำ CO&#x2082; กลับหัวใจ มีวาล์ว</div>
-    </div>
-
-    <!-- FLOATING DIRECTION PANEL -->
-    <div class="info-float info-float-dir hidden" id="fp-dir">
-        <div class="if-title" style="color:var(--y)"><span>&#x27A1; ทิศทางการไหลเวียน</span><span class="if-close"
-                onclick="togglePanel('dir',document.getElementById('tog-dir'))">&#x2715;</span></div>
-        <div
-            style="font-family:var(--body);font-size:.8rem;line-height:2;color:rgba(220,235,250,.85);text-align:center;padding:5px 0">
-            <div style="color:var(--r);font-weight:700">&#x25C4; HEAD (หัว)</div>
-            <div style="font-size:.68rem;color:rgba(255,45,85,.7)">หัวใจ | เหงือก | สมอง</div>
-            <div style="margin:7px 0;display:flex;align-items:center;justify-content:center;gap:7px">
-                <span style="color:var(--r)">&#x1F534; Artery &#x27A1;</span>
-                <span style="color:rgba(255,255,255,.3)">|</span>
-                <span style="color:var(--b)">&#x2B05; Vein &#x1F535;</span>
+    <!-- MICRO-ZOOM MODAL -->
+    <div id="mzmod">
+        <div class="mzbox">
+            <div class="mzhdr"><span>🔬 CELLULAR DETAIL — MICRO-ZOOM ×2000</span><span class="mzclose"
+                    onclick="closeMZ()">✕</span></div>
+            <div class="mzgrid">
+                <canvas id="c-mz2"></canvas>
+                <div class="mzinfo">
+                    <div class="mzlbl" style="color:var(--r)">🔴 RBC (Erythrocyte)</div>
+                    <div class="mzrow"><span class="mzk">DIAMETER</span><span class="mzv" style="color:var(--g)">6–8
+                            μm</span></div>
+                    <div class="mzrow"><span class="mzk">SHAPE</span><span class="mzv">Biconcave</span></div>
+                    <div class="mzrow"><span class="mzk">NUCLEUS</span><span class="mzv"
+                            style="color:var(--td)">None</span></div>
+                    <div class="mzrow"><span class="mzk">Hb CONTENT</span><span class="mzv"
+                            style="color:var(--r)">High</span></div>
+                    <div class="mzrow"><span class="mzk">LIFESPAN</span><span class="mzv">120 days</span></div>
+                    <div class="mzlbl" style="color:rgba(170,195,255,.75);margin-top:9px">🔵 WBC (Leukocyte)</div>
+                    <div class="mzrow"><span class="mzk">SIZE</span><span class="mzv" style="color:var(--b)">10–15
+                            μm</span></div>
+                    <div class="mzrow"><span class="mzk">NUCLEUS</span><span class="mzv">Present</span></div>
+                    <div class="mzrow"><span class="mzk">RATIO</span><span class="mzv" style="color:var(--td)">1:700
+                            RBC</span></div>
+                    <div class="mzlbl" style="color:rgba(195,255,225,.6);margin-top:9px">🟢 PLASMA</div>
+                    <div class="mzrow"><span class="mzk">WATER</span><span class="mzv" style="color:var(--g)">92%</span>
+                    </div>
+                    <div class="mzrow"><span class="mzk">PROTEIN</span><span class="mzv">7%</span></div>
+                    <div class="mzrow"><span class="mzk">GLUCOSE</span><span class="mzv" style="color:var(--am)">~90
+                            mg/dL</span></div>
+                </div>
             </div>
-            <div style="font-family:var(--mono);font-size:.57rem;color:rgba(0,212,255,.5);margin:5px 0">&#x2193;
-                Capillary (แลกเปลี่ยนก๊าซ) &#x2191;</div>
-            <div style="color:var(--b);font-weight:700">TAIL (หาง) &#x25BA;</div>
-            <div style="font-size:.68rem;color:rgba(0,120,255,.6)">กล้ามเนื้อ | ครีบ | หาง</div>
+        </div>
+    </div>
+
+    <div class="vhl" id="vhl"></div>
+    <div class="tip" id="tip">
+        <div class="tip-t" id="tip-t"></div>
+        <div id="tip-b"></div>
+    </div>
+
+    <div id="ptog">
+        <button class="pt active" id="tog-a" onclick="togglePanel('a',this)">🔴 ARTERY</button>
+        <button class="pt active" id="tog-c" onclick="togglePanel('c',this)">🟢 CAPILLARY</button>
+        <button class="pt active" id="tog-v" onclick="togglePanel('v',this)">🔵 VEIN</button>
+        <button class="pt" id="tog-d" onclick="togglePanel('d',this)">➡ DIRECTION</button>
+    </div>
+    <div class="fp fp-a hidden" id="fp-a">
+        <div class="fp-h" style="color:var(--r)"><span>🔴 ARTERY</span><span class="fp-x"
+                onclick="togglePanel('a',document.getElementById('tog-a'))">✕</span></div>
+        <div class="fp-row"><span class="fp-lbl">FLOW</span><span class="fp-val r">HEAD→TAIL</span></div>
+        <div class="fp-row"><span class="fp-lbl">O₂</span><span class="fp-val w">สูง (Rich)</span></div>
+        <div class="fp-row"><span class="fp-lbl">PRESSURE</span><span class="fp-val r">สูงมาก</span></div>
+        <div class="fp-desc"><strong>หลอดเลือดแดง</strong> — O₂ สูง ผนัง 3 ชั้น</div>
+    </div>
+    <div class="fp fp-c hidden" id="fp-c">
+        <div class="fp-h" style="color:var(--g)"><span>🟢 CAPILLARY</span><span class="fp-x"
+                onclick="togglePanel('c',document.getElementById('tog-c'))">✕</span></div>
+        <div class="fp-row"><span class="fp-lbl">SIZE</span><span class="fp-val g">5–10 μm</span></div>
+        <div class="fp-row"><span class="fp-lbl">WALL</span><span class="fp-val g">1 ชั้น</span></div>
+        <div class="fp-row"><span class="fp-lbl">FN</span><span class="fp-val w">GAS EXCHANGE</span></div>
+        <div class="fp-desc"><strong>หลอดเลือดฝอย</strong> — แลก O₂/CO₂</div>
+    </div>
+    <div class="fp fp-v hidden" id="fp-v">
+        <div class="fp-h" style="color:var(--b)"><span>🔵 VEIN</span><span class="fp-x"
+                onclick="togglePanel('v',document.getElementById('tog-v'))">✕</span></div>
+        <div class="fp-row"><span class="fp-lbl">FLOW</span><span class="fp-val b">TAIL→HEAD</span></div>
+        <div class="fp-row"><span class="fp-lbl">VALVE</span><span class="fp-val b">มี ✓</span></div>
+        <div class="fp-desc"><strong>หลอดเลือดดำ</strong> — CO₂ กลับหัวใจ</div>
+    </div>
+    <div class="fp fp-d hidden" id="fp-d">
+        <div class="fp-h" style="color:var(--am)"><span>➡ FLOW DIRECTION</span><span class="fp-x"
+                onclick="togglePanel('d',document.getElementById('tog-d'))">✕</span></div>
+        <div style="font-family:var(--body);font-size:.76rem;line-height:2;text-align:center;padding:5px 0">
+            <div style="color:var(--r);font-weight:700">◀ HEAD (หัว)</div>
+            <div style="margin:6px 0;display:flex;align-items:center;justify-content:center;gap:7px"><span
+                    style="color:var(--r)">🔴 Artery ➡</span><span style="color:rgba(255,255,255,.16)">|</span><span
+                    style="color:var(--b)">⬅ Vein 🔵</span></div>
+            <div style="font-family:var(--mono);font-size:.47rem;color:rgba(0,229,255,.35);margin:3px 0">↓ Capillary ↑
+            </div>
+            <div style="color:var(--b);font-weight:700">TAIL (หาง) ▶</div>
         </div>
     </div>
 
     <!-- OVERLAYS -->
     <div class="ov" id="ov-bio">
         <div class="mbox">
-            <button class="btnc" onclick="closeOv()">&#x2715;</button>
-            <div class="mt">CIRCULATORY SYSTEM // BIOLOGY DATA</div>
-            <div class="ms">BETTA SPLENDENS &mdash; FISH CARDIOVASCULAR ANALYSIS</div>
-            <div class="bs">
-                <div class="bst" style="color:var(--g)"><span>&#x1F41F;</span>ระบบหมุนเวียนเลือดของปลากัด</div>
-                <div class="sc">ปลากัดมี<strong>ระบบหมุนเวียนเลือดแบบปิด</strong> เลือดไหลภายในหลอดเลือดตลอดเวลา
-                    หัวใจมี<span class="hl">2 ห้อง</span> คือ Atrium และ Ventricle ต่างจากสัตว์เลี้ยงลูกด้วยนมที่มี 4
-                    ห้อง</div>
+            <button class="btnc" onclick="closeOv()">✕</button>
+            <div class="ov-t">CIRCULATORY SYSTEM — BIOLOGY DATA</div>
+            <div class="ov-s">BETTA SPLENDENS · FISH CARDIOVASCULAR</div>
+            <div class="sec sg">
+                <div class="st" style="color:var(--g)"><span>🐟</span>ระบบหมุนเวียนเลือด</div>
+                <div class="sc">ปลากัดมี<strong>ระบบหมุนเวียนเลือดแบบปิด</strong> หัวใจ<span class="hl">2 ห้อง</span>
+                    (Atrium + Ventricle)</div>
             </div>
-            <div class="bs rd">
-                <div class="bst" style="color:var(--r)"><span>&#x1F534;</span>หลอดเลือดแดง (Artery)</div>
-                <div class="sc"><strong>หน้าที่:</strong> นำเลือดออกจากหัวใจไปเลี้ยงอวัยวะ<br>
-                    <strong>โครงสร้าง 3 ชั้น:</strong><br>
-                    &bull; <span class="hl">Tunica Intima</span> &mdash; Endothelium ชั้นในสุด<br>
-                    &bull; <span class="hl">Tunica Media</span> &mdash; Smooth muscle + Elastin หนามาก<br>
-                    &bull; <span class="hl">Tunica Adventitia</span> &mdash; เนื้อเยื่อเกี่ยวพันชั้นนอก<br>
-                    <strong>แรงดัน:</strong> สูงมาก | <strong>สี:</strong> <span class="wn">แดงสด</span>
+            <div class="sec sr">
+                <div class="st" style="color:var(--r)"><span>🔴</span>Artery — ผนัง 3 ชั้น</div>
+                <div class="sc">· <span class="hl">Tunica Intima</span> · <span class="hl">Tunica Media</span> · <span
+                        class="hl">Tunica Adventitia</span><br>แรงดันสูง | O₂ สูง | สี <span class="wn">แดงสด</span>
                 </div>
             </div>
-            <div class="bs">
-                <div class="bst" style="color:var(--g)"><span>&#x1F7E2;</span>หลอดเลือดฝอย (Capillary)</div>
-                <div class="sc"><strong>ขนาด:</strong> 5&ndash;10 &#x3BC;m เล็กกว่าเส้นผม ~10 เท่า<br>
-                    <strong>ผนัง:</strong> 1 ชั้น Endothelium เพื่อให้สารซึมผ่านได้<br>
-                    <strong>แลกเปลี่ยน:</strong> O&#x2082; + Glucose &#x2192; เนื้อเยื่อ | CO&#x2082; + Waste &#x2192;
-                    เลือด<br>
-                    <strong>ความเร็ว:</strong> <span class="hl">ช้าที่สุด</span>
-                </div>
+            <div class="sec sg">
+                <div class="st" style="color:var(--g)"><span>🟢</span>Capillary — 5–10 μm</div>
+                <div class="sc">ผนัง 1 ชั้น Endothelium | O₂→เนื้อเยื่อ | CO₂→เลือด | ความเร็ว <span
+                        class="hl">ต่ำสุด</span></div>
             </div>
-            <div class="bs bl">
-                <div class="bst" style="color:var(--b)"><span>&#x1F535;</span>หลอดเลือดดำ (Vein)</div>
-                <div class="sc"><strong>หน้าที่:</strong> นำเลือดกลับหัวใจ<br>
-                    <strong>ลักษณะ:</strong> ผนังบางกว่า Artery มี<strong>Valve</strong> ป้องกันการไหลย้อน<br>
-                    <strong>สี:</strong> <span class="hl">แดงคล้ำ</span> (Hb + CO&#x2082;)
-                </div>
+            <div class="sec sb">
+                <div class="st" style="color:var(--b)"><span>🔵</span>Vein — มี Valve</div>
+                <div class="sc">นำเลือดกลับหัวใจ | ผนังบาง | <strong>Valve</strong> ป้องกัน backflow | สี <span
+                        class="hl">แดงคล้ำ</span></div>
             </div>
-            <div class="bs pu">
-                <div class="bst" style="color:var(--p)"><span>&#x1F4CA;</span>ตารางเปรียบเทียบ</div>
-                <table class="ct2">
+            <div class="sec sp">
+                <div class="st" style="color:var(--p)"><span>📊</span>ตารางเปรียบเทียบ</div>
+                <table class="dt">
                     <tr>
                         <th>คุณสมบัติ</th>
                         <th style="color:var(--r)">Artery</th>
@@ -1757,13 +2257,13 @@
                     <tr>
                         <td>ทิศทาง</td>
                         <td>ออกจากหัวใจ</td>
-                        <td>&mdash;</td>
+                        <td>—</td>
                         <td>เข้าสู่หัวใจ</td>
                     </tr>
                     <tr>
                         <td>ผนัง</td>
                         <td>หนามาก</td>
-                        <td>1 ชั้นเซลล์</td>
+                        <td>1 ชั้น</td>
                         <td>ปานกลาง</td>
                     </tr>
                     <tr>
@@ -1773,429 +2273,714 @@
                         <td>ต่ำมาก</td>
                     </tr>
                     <tr>
-                        <td>ขนาด</td>
-                        <td>เล็ก&ndash;กลาง</td>
-                        <td>5&ndash;10&#x3BC;m</td>
-                        <td>ใหญ่</td>
-                    </tr>
-                    <tr>
                         <td>วาล์ว</td>
                         <td>ไม่มี</td>
                         <td>ไม่มี</td>
-                        <td>มี &#x2713;</td>
+                        <td>มี ✓</td>
                     </tr>
                     <tr>
-                        <td>O&#x2082;/CO&#x2082;</td>
-                        <td>O&#x2082; สูง</td>
+                        <td>O₂/CO₂</td>
+                        <td>O₂ สูง</td>
                         <td>กำลังแลก</td>
-                        <td>CO&#x2082; สูง</td>
+                        <td>CO₂ สูง</td>
                     </tr>
                 </table>
             </div>
-            <div class="bs or">
-                <div class="bst" style="color:var(--o)"><span>&#x2764;&#xFE0F;</span>เส้นทางการไหลเวียนในปลา</div>
-                <div class="sc">หัวใจ &#x2192; <span class="wn">Artery</span> &#x2192; เหงือก &#x2192; <span
-                        class="hl">Dorsal Aorta</span> &#x2192; <span style="color:var(--g)">Capillary</span> &#x2192;
-                    <span class="hl">Vein</span> &#x2192; Atrium &#x2192; วนซ้ำ<br><br>
-                    <strong>Single Circulation:</strong> ผ่านหัวใจ 1 รอบ/วงจร ต่างจาก Double Circulation ของมนุษย์
+            <div class="sec sa">
+                <div class="st" style="color:var(--am)"><span>❤️</span>Single Circulation</div>
+                <div class="sc">หัวใจ → <span class="wn">Artery</span> → เหงือก → <span class="hl">Dorsal Aorta</span> →
+                    <span style="color:var(--g)">Capillary</span> → Vein → วนซ้ำ<br><strong>Single Circulation</strong>
+                    vs มนุษย์ Double Circulation
                 </div>
             </div>
-            <div style="text-align:center;margin-top:13px"><button class="bnn" onclick="closeOv()">&#x2715;
-                    CLOSE</button></div>
+            <div style="text-align:center;margin-top:12px"><button class="bnn" onclick="closeOv()">✕ CLOSE</button>
+            </div>
         </div>
     </div>
-
     <div class="ov" id="ov-quiz">
-        <div class="mbox">
-            <button class="btnc" onclick="closeOv()">&#x2715;</button>
-            <div class="mt">BIOLOGY ASSESSMENT</div>
-            <div class="ms">CIRCULATORY SYSTEM // KNOWLEDGE TEST</div>
+        <div class="mbox"><button class="btnc" onclick="closeOv()">✕</button>
+            <div class="ov-t">BIOLOGY ASSESSMENT</div>
+            <div class="ov-s">CIRCULATORY SYSTEM · KNOWLEDGE TEST</div>
             <div id="qi"></div>
         </div>
     </div>
-
     <div class="ov" id="ov-nar">
-        <div class="mbox">
-            <button class="btnc" onclick="closeOv()">&#x2715;</button>
-            <div class="mt">NARRATOR SCRIPT</div>
-            <div class="ms">บทพูดสำหรับการนำเสนอ // PRESENTATION</div>
+        <div class="mbox"><button class="btnc" onclick="closeOv()">✕</button>
+            <div class="ov-t">NARRATOR SCRIPT</div>
+            <div class="ov-s">บทพูดสำหรับการนำเสนอ</div>
             <div class="nl">
-                <div class="ns">&#x1F399; [OPENING — DR. SORAWIT]</div>ยินดีต้อนรับ... สู่ MICRO-LAB
-                Bio-Scanner<br>เครื่องวิเคราะห์ <strong>ระบบหมุนเวียนเลือด</strong> ในปลากัด แบบสามมิติ<br>สนับสนุนโดย
-                กลุ่มที่สาม ห้องห้าต่อแปด
+                <div class="ns">🎙 [OPENING]</div>ยินดีต้อนรับ สู่ MICRO-LAB เครื่องวิเคราะห์
+                <strong>ระบบหมุนเวียนเลือด</strong> ในปลากัด
             </div>
             <div class="nl">
-                <div class="ns">&#x1F399; [SCENE 1 — Artery]</div>มองเห็น เม็ดเลือดแดงสีแดงสด บน
-                <strong>อาร์เทอรี่</strong><br>กำลังพุ่ง จากหัว สู่หาง<br>ผนังหลอดเลือดแดง หนา และยืดหยุ่น
+                <div class="ns">🎙 [ARTERY]</div>เม็ดเลือดแดง พุ่งผ่าน <strong>อาร์เทอรี่</strong> ผนัง 3 ชั้น
+                รับแรงดันสูง
             </div>
             <div class="nl">
-                <div class="ns">&#x1F399; [SCENE 2 — DR. KANJANA — Capillary]</div>เราเห็นเครือข่าย
-                <strong>แคพิลลารี่</strong><br>ขนาดเพียง 5–10 ไมโครเมตร<br>ผนังชั้นเดียวนี้
-                คือจุดที่ออกซิเจนซึมออกสู่เนื้อเยื่อ
+                <div class="ns">🎙 [CAPILLARY]</div><strong>แคพิลลารี่</strong> 5–10 μm ผนัง 1 ชั้น แลกเปลี่ยน O₂/CO₂
             </div>
             <div class="nl">
-                <div class="ns">&#x1F399; [SCENE 3 — Vein]</div>เลือดที่มี CO&#x2082; สูง จะไหลกลับผ่าน
-                <strong>เวน</strong> จากหาง มุ่งสู่หัวใจ<br>วาล์วภายใน ช่วยป้องกัน การไหลย้อน
+                <div class="ns">🎙 [VEIN]</div>เลือด CO₂ สูง ไหลกลับผ่าน <strong>เวน</strong> วาล์วป้องกัน backflow
             </div>
             <div class="nl">
-                <div class="ns">&#x1F399; [SCENE 4 — สรุป]</div>ปลากัด มีระบบหมุนเวียนเลือด
-                <strong>แบบปิด</strong><br>หัวใจ สองห้อง... การไหลเป็น <strong>Single Circulation</strong>
+                <div class="ns">🎙 [CLOSE]</div>ปลากัด — <strong>Single Circulation</strong> หัวใจ 2 ห้อง
             </div>
-            <div class="nl">
-                <div class="ns">&#x1F399; [CLOSING — ทั้งคู่]</div>ขอบคุณ ที่ร่วมสำรวจ Micro-Lab<br>กดปุ่ม ASSESSMENT
-                เพื่อทำแบบทดสอบ ได้เลยครับ/ค่ะ
+            <div style="text-align:center;margin-top:11px"><button class="bnn" onclick="closeOv()">✕ CLOSE</button>
             </div>
-            <div
-                style="margin-top:12px;padding:11px;background:rgba(0,212,255,.035);border:1px solid rgba(0,212,255,.08)">
-                <div
-                    style="font-family:var(--mono);font-size:.54rem;color:var(--b);letter-spacing:.1em;margin-bottom:4px">
-                    &#x1F4A1; TIP</div>
-                <div style="font-family:var(--body);font-size:.72rem;color:rgba(200,220,240,.62);line-height:1.56">
-                    บรรทัดใหม่ = หยุด 1 วินาที | "..." = 0.5 วินาที | ตัวหนา = เน้นเสียง</div>
-            </div>
-            <div style="text-align:center;margin-top:12px"><button class="bnn" onclick="closeOv()">&#x2715;
-                    CLOSE</button></div>
         </div>
     </div>
-
     <div class="ov" id="ov-mem">
-        <div class="mbox">
-            <button class="btnc" onclick="closeOv()">&#x2715;</button>
-            <div class="mt">RESEARCH TEAM</div>
-            <div class="ms">LUNG GROUP 3 // CLASS 5/8 // BANGPAKOKWITTAYAKOM</div>
-            <div class="mc">
+        <div class="mbox"><button class="btnc" onclick="closeOv()">✕</button>
+            <div class="ov-t">RESEARCH TEAM</div>
+            <div class="ov-s">GROUP 3 · CLASS 5/8 · BANGPAKOKWITTAYAKOM</div>
+            <div class="mbr">
                 <div class="mn">01</div>
-                <div class="mi">
-                    <div class="nm">นายสรวิชญ์ ศรีลาออน</div>
-                    <div class="nx">เลขที่ 11 &mdash; DR. SORAWIT &#x1F399;</div>
+                <div>
+                    <div class="mm">นายสรวิชญ์ ศรีลาออน</div>
+                    <div class="mx">เลขที่ 11 — DR. SORAWIT 🎙</div>
                 </div>
             </div>
-            <div class="mc">
+            <div class="mbr">
                 <div class="mn">02</div>
-                <div class="mi">
-                    <div class="nm">นายชยางกูร เชื้อเจริญ</div>
-                    <div class="nx">เลขที่ 17</div>
+                <div>
+                    <div class="mm">นายชยางกูร เชื้อเจริญ</div>
+                    <div class="mx">เลขที่ 17</div>
                 </div>
             </div>
-            <div class="mc">
+            <div class="mbr">
                 <div class="mn">03</div>
-                <div class="mi">
-                    <div class="nm">นายปองคุณ อนุกิตติรัตน์</div>
-                    <div class="nx">เลขที่ 19</div>
+                <div>
+                    <div class="mm">นายปองคุณ อนุกิตติรัตน์</div>
+                    <div class="mx">เลขที่ 19</div>
                 </div>
             </div>
-            <div class="mc">
+            <div class="mbr">
                 <div class="mn">04</div>
-                <div class="mi">
-                    <div class="nm">นางสาวกาญจนา คชศิลา</div>
-                    <div class="nx">เลขที่ 33 &mdash; DR. KANJANA &#x1F399;</div>
+                <div>
+                    <div class="mm">นางสาวกาญจนา คชศิลา</div>
+                    <div class="mx">เลขที่ 33 — DR. KANJANA 🎙</div>
                 </div>
             </div>
-            <div style="text-align:center;margin-top:18px;padding:14px;border-top:1px solid rgba(0,212,255,.08)">
+            <div style="text-align:center;margin-top:13px;padding:12px;border-top:1px solid var(--bd)">
                 <div
-                    style="font-family:var(--hud);font-size:.63rem;color:var(--b);letter-spacing:.14em;margin-bottom:4px">
-                    MICRO-LAB v13.0</div>
-                <div style="margin-top:10px;display:flex;gap:4px;justify-content:center;flex-wrap:wrap">
-                    <span class="chip cr">Biology</span><span class="chip cb2">M.5</span><span
-                        class="chip cg">Interactive</span><span class="chip cp">3D Sim</span>
-                </div>
+                    style="font-family:var(--hud);font-size:.55rem;color:var(--b);letter-spacing:.14em;margin-bottom:7px">
+                    MICRO-LAB v17 ULTIMATE</div>
+                <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap"><span
+                        class="chip cr2">Biology</span><span class="chip cb2">M.5</span><span
+                        class="chip cg2">Interactive</span><span class="chip cp2">3D Sim</span></div>
             </div>
-            <div style="text-align:center;margin-top:11px;display:flex;gap:6px;justify-content:center">
-                <button class="bnn" onclick="closeOv()">&#x2715; CLOSE</button>
-                <button class="bnn" onclick="location.reload()">&#x21BA; RE-SCAN</button>
+            <div style="text-align:center;margin-top:9px;display:flex;gap:6px;justify-content:center">
+                <button class="bnn" onclick="closeOv()">✕ CLOSE</button><button class="bnn"
+                    onclick="location.reload()">↺ RESCAN</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ══ AUDIO CONTEXT SFX ══
+        // ══════════════════════════════════════════
+        // GLOBAL STATE
+        // ══════════════════════════════════════════
+        var G = { speed: 1, paused: false, turbo: false, density: .5, viscosity: .25, soundLevel: 0, beatOn: false, micOn: false, autoBeatT: 0 };
+        var simStarted = false;
+
+        // ══════════════════════════════════════════
+        // AUDIO SFX
+        // ══════════════════════════════════════════
         var AC;
         function getAC() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); return AC }
-        function playBeep(f, d, t, v) { try { var a = getAC(), o = a.createOscillator(), g = a.createGain(); o.connect(g); g.connect(a.destination); o.type = t || 'sine'; o.frequency.setValueAtTime(f, a.currentTime); g.gain.setValueAtTime(v || .15, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + d); o.start(a.currentTime); o.stop(a.currentTime + d) } catch (e) { } }
-        function sfxClick() { playBeep(880, .08, 'square', .1); setTimeout(function () { playBeep(1200, .06, 'square', .08) }, 60) }
-        function sfxOpen() { playBeep(440, .1, 'sine', .12); setTimeout(function () { playBeep(660, .15, 'sine', .1) }, 80) }
-        function sfxCorrect() { playBeep(523, .1, 'sine', .14); setTimeout(function () { playBeep(659, .1, 'sine', .12) }, 100); setTimeout(function () { playBeep(784, .2, 'sine', .1) }, 200) }
-        function sfxWrong() { playBeep(200, .3, 'sawtooth', .12) }
-        function sfxScan() { playBeep(1000, .05, 'square', .06); setTimeout(function () { playBeep(800, .05, 'square', .05) }, 60); setTimeout(function () { playBeep(600, .08, 'square', .04) }, 120) }
+        function beep(f, d, t, v) { try { var a = getAC(), o = a.createOscillator(), g = a.createGain(); o.connect(g); g.connect(a.destination); o.type = t || 'sine'; o.frequency.setValueAtTime(f, a.currentTime); g.gain.setValueAtTime(v || .1, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + d); o.start(); o.stop(a.currentTime + d) } catch (e) { } }
+        function sfxC() { beep(1100, .07, 'square', .08); setTimeout(() => beep(1400, .05, 'square', .06), 50) }
+        function sfxO() { beep(480, .08, 'sine', .1); setTimeout(() => beep(720, .14, 'sine', .08), 70) }
+        function sfxOk() { beep(523, .09, 'sine', .12); setTimeout(() => beep(659, .09, 'sine', .1), 90); setTimeout(() => beep(784, .18, 'sine', .08), 180) }
+        function sfxBad() { beep(180, .28, 'sawtooth', .1) }
+        function sfxScan() { beep(1200, .04, 'square', .05); setTimeout(() => beep(900, .04, 'square', .04), 50) }
 
-        // ══ CANVAS ══
-        var C = document.getElementById('bg'), ctx = C.getContext('2d');
-        var W, H, aY, vY, zoom = .2, started = false;
-        var cells = [], caps = [], blobs = [];
-
-        function resize() {
-            var dpr = Math.min(window.devicePixelRatio || 1, 2);
-            W = window.innerWidth; H = window.innerHeight;
-            C.width = W * dpr; C.height = H * dpr; C.style.width = W + 'px'; C.style.height = H + 'px';
-            ctx.scale(dpr, dpr);
-            aY = H * .37; vY = H * .63;
-            buildCaps();
-        }
-        resize();
-        window.addEventListener('resize', resize);
-
-        function buildCaps() {
-            caps = [];
-            var n = Math.max(10, Math.floor(W / 50));
-            for (var i = 0; i < n; i++) {
-                var x = W * .1 + (i / n) * W * .8;
-                var bendX = (Math.random() - .5) * (W * .2), bendY = (Math.random() - .5) * 35;
-                caps.push({ x1: x + (Math.random() - .5) * 25, y1: aY, cx1: x + bendX * .6, cy1: H * .45 + bendY, cx2: x + bendX, cy2: H * .55 + bendY, x2: x + (Math.random() - .5) * 25, y2: vY });
-            }
-        }
-
-        for (var i = 0; i < 55; i++)blobs.push({ x: Math.random() * 2400 - 200, y: Math.random() * 1600 - 100, r: 45 + Math.random() * 110, a: Math.random() * .1, vx: (Math.random() - .5) * .12 });
-
-        function Cell() { this.reset(true) }
-        Cell.prototype.reset = function (r) { this.mode = 'a'; this.t = r ? Math.random() : 0; this.oy = (Math.random() - .5) * 18; this.oz = (Math.random() - .5) * .5; this.sp = .35 + Math.random() * 1.05; this.ci = Math.floor(Math.random() * caps.length); this.sz = 3 + Math.random() * 3.5; this.ct = 0 };
-        Cell.prototype.update = function (p) {
-            if (this.mode === 'a') { this.t += (.0038 + p * .011) * this.sp; if (this.t > 1) this.t = 0; this.px = -W * .1 + this.t * (W * 1.2); this.py = aY + this.oy; if (this.px > caps[this.ci].x1 - 15 && Math.random() > .983) this.mode = 'c'; }
-            else if (this.mode === 'c') { this.ct += .006 * this.sp; if (this.ct >= 1) { this.mode = 'v'; this.t = 1; return } var c = caps[this.ci], t = this.ct; this.px = Math.pow(1 - t, 3) * c.x1 + 3 * Math.pow(1 - t, 2) * t * c.cx1 + 3 * (1 - t) * t * t * c.cx2 + t * t * t * c.x2; this.py = Math.pow(1 - t, 3) * c.y1 + 3 * Math.pow(1 - t, 2) * t * c.cy1 + 3 * (1 - t) * t * t * c.cy2 + t * t * t * c.y2; }
-            else { this.t -= .0032 * this.sp; if (this.t < 0) { this.reset(); return } this.px = -W * .1 + this.t * (W * 1.2); this.py = vY + this.oy; }
-        };
-        Cell.prototype.draw = function (p) {
-            var s = this.sz * (1 + p * .18) * (0.72 + this.oz * .28) * zoom, r2, g2, b2;
-            if (this.mode === 'a') { r2 = 255; g2 = 45; b2 = 75 } else if (this.mode === 'v') { r2 = 35; g2 = 130; b2 = 255 } else { var rt = this.ct; r2 = Math.floor(255 * (1 - rt)); g2 = 70; b2 = Math.floor(75 + rt * 180) }
-            ctx.fillStyle = 'rgba(0,0,0,' + (0.28 * (1 - this.oz * .5)) + ')';
-            ctx.beginPath(); ctx.ellipse(this.px + 1.5, this.py + 2.5, s * .85, s * .5, 0, 0, Math.PI * 2); ctx.fill();
-            ctx.shadowBlur = 12 * zoom; ctx.shadowColor = 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',.38)';
-            ctx.fillStyle = 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',.88)';
-            ctx.beginPath(); ctx.ellipse(this.px, this.py, s, s * .58, 0, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.shadowBlur = 0;
-            ctx.beginPath(); ctx.ellipse(this.px - s * .2, this.py - s * .2, s * .3, s * .2, -.4, 0, Math.PI * 2); ctx.fill();
-            ctx.shadowBlur = 0;
-        };
-
-        var nC = Math.min(380, Math.floor(window.innerWidth * window.innerHeight / 3800));
-        for (var i = 0; i < nC; i++)cells.push(new Cell());
-
-        function drawGrid() { ctx.strokeStyle = 'rgba(0,212,255,.022)'; ctx.lineWidth = 1; for (var x = 0; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke() } for (var y = 0; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke() } }
-
-        function drawTube(y, c1, c2, glow, r) {
-            r = r || 0;
-            ctx.strokeStyle = 'rgba(0,0,0,.45)'; ctx.lineWidth = (22 + r) * zoom; ctx.lineCap = 'round';
-            ctx.beginPath(); ctx.moveTo(-W * .12, y + 6); ctx.lineTo(W * 1.12, y + 6); ctx.stroke();
-            var gr = ctx.createLinearGradient(0, y - (22 + r), 0, y + (22 + r));
-            gr.addColorStop(0, c1); gr.addColorStop(.4, c2); gr.addColorStop(.6, c2); gr.addColorStop(1, c1);
-            ctx.strokeStyle = gr; ctx.lineWidth = (20 + r) * zoom;
-            ctx.shadowBlur = 28 * zoom; ctx.shadowColor = glow;
-            ctx.beginPath(); ctx.moveTo(-W * .12, y); ctx.lineTo(W * 1.12, y); ctx.stroke();
-            ctx.strokeStyle = 'rgba(255,255,255,.14)'; ctx.lineWidth = 5 * zoom; ctx.shadowBlur = 0;
-            ctx.beginPath(); ctx.moveTo(-W * .12, y - 7); ctx.lineTo(W * 1.12, y - 7); ctx.stroke();
-            ctx.strokeStyle = 'rgba(255,255,255,.06)'; ctx.lineWidth = 3 * zoom;
-            ctx.beginPath(); ctx.moveTo(-W * .12, y - 11); ctx.lineTo(W * 1.12, y - 11); ctx.stroke();
-        }
-
-        var startT = performance.now();
-        function frame(now) {
-            requestAnimationFrame(frame);
-            var t = (now - startT) * .001, pulse = Math.pow(Math.sin(t * 1.25), 8);
-            if (started && zoom < 1) zoom += .0025;
-            ctx.clearRect(0, 0, W, H);
-            var bg = ctx.createRadialGradient(W / 2, H * .45, 0, W / 2, H * .5, Math.max(W, H) * .75);
-            bg.addColorStop(0, 'rgba(5,10,25,1)'); bg.addColorStop(.6, 'rgba(3,6,16,1)'); bg.addColorStop(1, 'rgba(1,2,8,1)');
-            ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-            drawGrid();
-            ctx.save();
-            ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-W / 2, -H / 2);
-            blobs.forEach(function (b) { b.x += b.vx; if (b.x > W + 300) b.x = -300; var gr = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r); gr.addColorStop(0, 'rgba(15,4,10,' + b.a + ')'); gr.addColorStop(1, 'transparent'); ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill() });
-            var pr = (pulse * 60 + 8) * zoom;
-            ctx.strokeStyle = 'rgba(255,45,85,' + (pulse * .15) + ')'; ctx.lineWidth = (22 + pr) * zoom; ctx.shadowBlur = 0;
-            ctx.beginPath(); ctx.moveTo(-W * .12, aY); ctx.lineTo(W * 1.12, aY); ctx.stroke();
-            ctx.strokeStyle = 'rgba(0,120,255,' + (pulse * .1) + ')'; ctx.lineWidth = (22 + pr * .5) * zoom;
-            ctx.beginPath(); ctx.moveTo(-W * .12, vY); ctx.lineTo(W * 1.12, vY); ctx.stroke();
-            drawTube(aY, 'rgba(90,8,22,.7)', 'rgba(210,25,55,.85)', 'rgba(255,45,85,.45)', pulse * 4);
-            drawTube(vY, 'rgba(8,22,80,.7)', 'rgba(18,70,190,.85)', 'rgba(0,100,240,.4)', pulse * 2);
-            ctx.lineWidth = 2.2 * zoom; ctx.shadowBlur = 0;
-            caps.forEach(function (c) { var gr = ctx.createLinearGradient(c.x1, c.y1, c.x2, c.y2); gr.addColorStop(0, 'rgba(255,55,75,.3)'); gr.addColorStop(.5, 'rgba(0,180,140,.22)'); gr.addColorStop(1, 'rgba(35,130,255,.3)'); ctx.strokeStyle = gr; ctx.beginPath(); ctx.moveTo(c.x1, c.y1); ctx.bezierCurveTo(c.cx1, c.cy1, c.cx2, c.cy2, c.x2, c.y2); ctx.stroke() });
-            cells.forEach(function (c) { c.update(pulse) });
-            cells.sort(function (a, b) { return a.oz - b.oz });
-            cells.forEach(function (c) { c.draw(pulse) });
-            ctx.restore();
-
-            // ── Labels outside zoom ──
-            ctx.save();
-            ctx.textBaseline = 'middle';
-            var fs = Math.max(10, Math.min(13, W * .011));
-            function drawVesselBar(y, label, col) {
-                var barY = y + 22;
-                ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.fillRect(0, barY - 10, W, 20);
-                ctx.font = '700 ' + fs + 'px Orbitron,sans-serif'; ctx.textAlign = 'center';
-                ctx.fillStyle = col; ctx.globalAlpha = .9; ctx.fillText(label, W / 2, barY); ctx.globalAlpha = 1;
-            }
-            drawVesselBar(aY, '▶ ARTERY — O₂ RICH', 'rgba(255,60,80,.95)');
-            drawVesselBar(vY, '◀ VEIN — CO₂ RICH', 'rgba(50,150,255,.95)');
-
-            // Corner: HEAD / TAIL — dynamic nav height
-            var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 48;
-            var topH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 44;
-            var cPad = 12, cY = H - navH - 10;
-            var cfs = Math.max(9, Math.min(14, W * .012));
-
-            ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(0, cY - cfs - 5, 110 + cfs * 3, cfs * 2 + 12);
-            ctx.fillStyle = 'rgba(255,60,80,.8)'; ctx.fillRect(0, cY - cfs - 5, 3, cfs * 2 + 12);
-            ctx.font = '900 ' + (cfs + 1) + 'px Orbitron,sans-serif'; ctx.fillStyle = 'rgba(255,60,80,1)'; ctx.textAlign = 'left'; ctx.fillText('◀ HEAD', cPad, cY - 4);
-            ctx.font = '500 ' + (cfs - 2) + 'px Rajdhani,sans-serif'; ctx.fillStyle = 'rgba(255,160,160,.75)'; ctx.fillText('หัวใจ | เหงือก', cPad, cY + cfs);
-
-            var tailW = 130 + cfs * 3;
-            ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(W - tailW, cY - cfs - 5, tailW, cfs * 2 + 12);
-            ctx.fillStyle = 'rgba(50,150,255,.8)'; ctx.fillRect(W - 3, cY - cfs - 5, 3, cfs * 2 + 12);
-            ctx.font = '900 ' + (cfs + 1) + 'px Orbitron,sans-serif'; ctx.fillStyle = 'rgba(50,150,255,1)'; ctx.textAlign = 'right'; ctx.fillText('TAIL ▶', W - cPad, cY - 4);
-            ctx.font = '500 ' + (cfs - 2) + 'px Rajdhani,sans-serif'; ctx.fillStyle = 'rgba(130,180,255,.75)'; ctx.fillText('ครีบ | หาง', W - cPad, cY + cfs);
-            ctx.restore();
-
-            var mel = document.getElementById('mg'); if (mel) mel.textContent = String(Math.floor(zoom * 350)).padStart(3, '0');
-            var mb = document.getElementById('mb'); if (mb) mb.style.width = (zoom * 94) + '%';
-        }
-        requestAnimationFrame(frame);
-
-        // ══ CANVAS HOVER ══
-        var vhl = document.getElementById('vhlabel');
-        document.getElementById('bg').addEventListener('mousemove', function (e) {
-            var y = e.clientY, lbl = '', col = '', th = 22;
-            if (Math.abs(y - aY) < th * zoom + 10) { lbl = 'ARTERY &mdash; O&#x2082; RICH | HIGH PRESSURE'; col = 'var(--r)' }
-            else if (Math.abs(y - vY) < th * zoom + 10) { lbl = 'VEIN &mdash; CO&#x2082; RICH | LOW PRESSURE | HAS VALVE'; col = 'var(--b)' }
-            else if (y > aY + th && y < vY - th) { lbl = 'CAPILLARY NETWORK &mdash; GAS EXCHANGE | 5&ndash;10&#x3BC;m'; col = 'var(--g)' }
-            if (lbl) { vhl.innerHTML = lbl; vhl.style.left = Math.min(e.clientX + 14, W - 230) + 'px'; vhl.style.top = Math.max(e.clientY - 28, 8) + 'px'; vhl.style.borderLeftColor = col; vhl.style.color = col; vhl.classList.add('on') }
-            else vhl.classList.remove('on');
-        });
-        document.getElementById('bg').addEventListener('mouseleave', function () { vhl.classList.remove('on') });
-
-        // ══ TOOLTIP ══
-        var tipData = {
-            artery: { title: 'ARTERY — หลอดเลือดแดง', body: 'นำเลือด O₂ สูงจากหัวใจ ผนัง 3 ชั้น Tunica Media หนายืดหยุ่นสูง รับแรงดัน systolic' },
-            cap: { title: 'CAPILLARY — หลอดเลือดฝอย', body: 'ขนาด 5–10 μm ผนัง 1 ชั้น Endothelium ความเร็วต่ำสุด แลกเปลี่ยน O₂ CO₂ ได้สมบูรณ์' },
-            vein: { title: 'VEIN — หลอดเลือดดำ', body: 'นำ CO₂ กลับหัวใจ ผนังบาง มี Valve semi-lunar ป้องกัน backflow' }
-        };
-        var tip = document.getElementById('tip');
-        document.querySelectorAll('.card[data-tip]').forEach(function (el) {
-            el.addEventListener('mouseenter', function () { var d = tipData[el.dataset.tip]; if (!d) return; document.getElementById('tip-title').textContent = d.title; document.getElementById('tip-body').textContent = d.body; tip.classList.add('on'); sfxScan() });
-            el.addEventListener('mousemove', function (e) { tip.style.left = Math.min(e.clientX + 16, window.innerWidth - 220) + 'px'; tip.style.top = Math.max(e.clientY - 10, 8) + 'px' });
-            el.addEventListener('mouseleave', function () { tip.classList.remove('on') });
-        });
-
-        // ══ BOOT ══
-        var logs = ['LOADING NEURAL INTERFACE...', 'INIT RENDER ENGINE...', 'CALIBRATING BIO-SCANNER...', 'MAPPING VESSEL NETWORK...', 'INJECTING CELL PARTICLES...', 'CARDIAC MONITOR ONLINE...', 'BIOLOGY DB COMPILED...', 'CHARACTERS LOADED...', 'SYSTEM READY'];
-        var step = 0;
-        function tick() {
-            if (step >= logs.length) { document.getElementById('bl').textContent = 'ALL SYSTEMS NOMINAL'; document.getElementById('sb').classList.add('show'); return }
-            document.getElementById('bl').textContent = logs[step];
-            document.getElementById('bf').style.width = ((step + 1) / logs.length * 100) + '%';
-            step++; setTimeout(tick, 260 + Math.random() * 160);
-        }
-        setTimeout(tick, 350);
-
-        document.getElementById('sb').onclick = function () {
-            sfxOpen(); started = true;
-            document.getElementById('va').play().catch(function () { });
-            var boot = document.getElementById('boot');
-            boot.classList.add('out');
-            setTimeout(function () { boot.style.display = 'none'; document.getElementById('hud').classList.add('on') }, 1500);
-            setInterval(function () {
-                var bv = document.getElementById('bv'); if (bv) bv.textContent = 68 + Math.floor(Math.random() * 18);
-                var tv = document.getElementById('tmp'); if (tv) tv.textContent = (25.8 + Math.random() * .6).toFixed(1) + '°C';
-                var rv = document.getElementById('rbc'); if (rv) rv.textContent = (2.1 + Math.random() * .4).toFixed(2) + 'M/μL';
-            }, 1700);
-        };
-        setInterval(function () { var c = document.getElementById('clk'); if (c) c.textContent = new Date().toLocaleTimeString('en-US', { hour12: false }) }, 1000);
-
-        // ══ INFO PANELS ══
-        var infoPanelOpen = false;
-        var panelState = { artery: true, cap: true, vein: true, dir: false };
-
-        function toggleInfoMode(btn) {
-            infoPanelOpen = !infoPanelOpen;
-            var tog = document.getElementById('panel-toggles');
-            tog.style.display = infoPanelOpen ? 'flex' : 'none';
-            btn.classList.toggle('on', infoPanelOpen);
-            ['artery', 'cap', 'vein', 'dir'].forEach(function (k) {
-                var fp = document.getElementById('fp-' + k);
-                if (!infoPanelOpen) fp.classList.add('hidden');
-                else { if (panelState[k]) fp.classList.remove('hidden'); else fp.classList.add('hidden') }
-            });
-        }
-
-        function togglePanel(key, btn) {
-            panelState[key] = !panelState[key];
-            var fp = document.getElementById('fp-' + key);
-            if (panelState[key]) fp.classList.remove('hidden'); else fp.classList.add('hidden');
-            if (btn) btn.classList.toggle('active', panelState[key]);
-        }
-
-        // Draggable panels
+        // ══════════════════════════════════════════
+        // DNA INTRO CANVAS
+        // ══════════════════════════════════════════
         (function () {
-            ['fp-artery', 'fp-cap', 'fp-vein', 'fp-dir'].forEach(function (id) {
-                var el = document.getElementById(id), dragging = false, ox = 0, oy = 0;
-                el.addEventListener('mousedown', function (e) { if (e.target.classList.contains('if-close')) return; dragging = true; ox = e.clientX - el.offsetLeft; oy = e.clientY - el.offsetTop; el.style.transition = 'none'; el.style.cursor = 'grabbing' });
-                document.addEventListener('mousemove', function (e) { if (!dragging) return; el.style.left = (e.clientX - ox) + 'px'; el.style.top = (e.clientY - oy) + 'px'; el.style.transform = 'none'; el.style.right = 'auto'; el.style.bottom = 'auto' });
-                document.addEventListener('mouseup', function () { dragging = false; el.style.cursor = ''; el.style.transition = '' });
-                // Touch drag
-                el.addEventListener('touchstart', function (e) { if (e.target.classList.contains('if-close')) return; var t = e.touches[0]; dragging = true; ox = t.clientX - el.offsetLeft; oy = t.clientY - el.offsetTop; el.style.transition = 'none' }, { passive: true });
-                document.addEventListener('touchmove', function (e) { if (!dragging) return; var t = e.touches[0]; el.style.left = (t.clientX - ox) + 'px'; el.style.top = (t.clientY - oy) + 'px'; el.style.transform = 'none'; el.style.right = 'auto'; el.style.bottom = 'auto' }, { passive: true });
-                document.addEventListener('touchend', function () { dragging = false; el.style.transition = '' });
-            });
+            var c = document.getElementById('c-dna'), x = c.getContext('2d');
+            function rs() { c.width = innerWidth; c.height = innerHeight } rs(); window.addEventListener('resize', rs);
+            var t = 0;
+            (function f() {
+                requestAnimationFrame(f);
+                x.clearRect(0, 0, c.width, c.height);
+                var W = c.width, H = c.height, cx = W / 2, pts = 55, r = 78, ys = H * .82, yo = (H - ys) / 2;
+                x.fillStyle = 'rgba(1,3,11,.22)'; x.fillRect(0, 0, W, H);
+                for (var s = 0; s < 2; s++) {
+                    for (var i = 0; i < pts; i++) {
+                        var p = i / pts, y = yo + p * ys, a = p * Math.PI * 5.8 + t + s * Math.PI, d = (Math.sin(a) + 1) / 2, al = .06 + d * .52, sz = 1.3 + d * 2.2;
+                        var col = s === 0 ? 'rgba(255,' + (44 + Math.round(d * 24)) + ',' + (78 + Math.round(d * 14)) + ',' + al + ')' : 'rgba(' + (14 + Math.round(d * 8)) + ',' + (198 + Math.round(d * 57)) + ',255,' + al * .7 + ')';
+                        x.shadowBlur = d > .6 ? 8 : 0; x.shadowColor = col;
+                        x.fillStyle = col; x.beginPath(); x.arc(cx + Math.cos(a) * r, y, sz, 0, Math.PI * 2); x.fill();
+                    }
+                }
+                x.shadowBlur = 0;
+                for (var i = 0; i < pts; i += 3) {
+                    var p = i / pts, y = yo + p * ys, a = p * Math.PI * 5.8 + t, d = (Math.sin(a) + 1) / 2;
+                    x.strokeStyle = 'rgba(0,229,255,' + (0.025 + d * .08) + ')'; x.lineWidth = .65;
+                    x.beginPath(); x.moveTo(cx + Math.cos(a) * r, y); x.lineTo(cx + Math.cos(a + Math.PI) * r, y); x.stroke();
+                }
+                t += .012;
+            })();
         })();
 
-        // ══ NAV ══
-        function Nav(pg, btn) { document.querySelectorAll('.bn').forEach(function (b) { b.classList.remove('on') }); btn.classList.add('on'); sfxClick(); if (pg === 'sim') { closeOv(); return } closeOv(); var el = document.getElementById('ov-' + pg); if (el) { el.classList.add('on'); sfxOpen() } if (pg === 'quiz') Q.init() }
-        function closeOv() { document.querySelectorAll('.ov').forEach(function (o) { o.classList.remove('on') }) }
+        // ══════════════════════════════════════════
+        // MAIN CANVAS — Fish + Particles (Canvas2D)
+        // ══════════════════════════════════════════
+        (function () {
+            var C = document.getElementById('c-main'), ctx = C.getContext('2d');
+            var W, H, aY, vY, zoom = 0.15, tubeOff = 0, meshT = 0, fishAngle = 0, heartPulse = 0;
+            var caps = [];
 
-        // ══ QUIZ ══
+            function rs() {
+                var dpr = Math.min(devicePixelRatio || 1, 2);
+                W = innerWidth; H = innerHeight;
+                C.width = W * dpr; C.height = H * dpr; C.style.width = W + 'px'; C.style.height = H + 'px';
+                ctx.scale(dpr, dpr);
+                aY = H * .36; vY = H * .64;
+                window._aY = aY; window._vY = vY;
+                buildCaps();
+            }
+            rs(); window.addEventListener('resize', rs);
+
+            function buildCaps() {
+                caps = []; var n = Math.max(12, Math.floor(W / 44));
+                for (var i = 0; i < n; i++) {
+                    var x = W * .08 + (i / n) * W * .84, bx = (Math.random() - .5) * (W * .14), by = (Math.random() - .5) * 26;
+                    caps.push({ x1: x + (Math.random() - .5) * 16, y1: aY, cx1: x + bx * .5, cy1: H * .44 + by, cx2: x + bx, cy2: H * .56 + by, x2: x + (Math.random() - .5) * 16, y2: vY });
+                }
+            }
+
+            // ─── FISH (Canvas2D) ───
+            function drawFish(cx, cy, w, h, t, pulse, visib) {
+                if (visib < .01) return;
+                ctx.save();
+                // body
+                var bodyGrd = ctx.createRadialGradient(cx - w * .1, cy, h * .05, cx, cy, w * .6);
+                bodyGrd.addColorStop(0, 'rgba(60,120,220,' + (.55 * visib) + ')');
+                bodyGrd.addColorStop(.4, 'rgba(35,80,185,' + (.5 * visib) + ')');
+                bodyGrd.addColorStop(.8, 'rgba(80,30,140,' + (.45 * visib) + ')');
+                bodyGrd.addColorStop(1, 'rgba(15,30,80,0)');
+                ctx.shadowBlur = 30 * visib; ctx.shadowColor = 'rgba(0,150,255,' + (.3 * visib) + ')';
+                ctx.fillStyle = bodyGrd;
+                ctx.beginPath();
+                // fish body outline using bezier
+                var bx = cx, by = cy;
+                ctx.moveTo(bx + w * .48, by);
+                ctx.bezierCurveTo(bx + w * .45, by - h * .22, bx + w * .15, by - h * .45, bx - w * .05, by - h * .38);
+                ctx.bezierCurveTo(bx - w * .25, by - h * .3, bx - w * .48, by - h * .12, bx - w * .5, by);
+                ctx.bezierCurveTo(bx - w * .48, by + h * .12, bx - w * .25, by + h * .3, bx - w * .05, by + h * .38);
+                ctx.bezierCurveTo(bx + w * .15, by + h * .45, bx + w * .45, by + h * .22, bx + w * .48, by);
+                ctx.closePath(); ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // tail fin
+                var tw = t * 2.5, tailWave = Math.sin(t * 2.8) * 0.08 * h;
+                ctx.beginPath();
+                ctx.moveTo(bx - w * .5, by);
+                ctx.bezierCurveTo(bx - w * .7, by - h * .5 + tailWave, bx - w * .9, by - h * .7 + tailWave, bx - w * .85, by - h * .55 + tailWave);
+                ctx.bezierCurveTo(bx - w * .75, by - h * .35, bx - w * .58, by - h * .15, bx - w * .5, by);
+                ctx.fillStyle = 'rgba(80,40,160,' + (.35 * visib) + ')'; ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(bx - w * .5, by);
+                ctx.bezierCurveTo(bx - w * .7, by + h * .5 - tailWave, bx - w * .9, by + h * .7 - tailWave, bx - w * .85, by + h * .55 - tailWave);
+                ctx.bezierCurveTo(bx - w * .75, by + h * .35, bx - w * .58, by + h * .15, bx - w * .5, by);
+                ctx.fillStyle = 'rgba(70,30,150,' + (.3 * visib) + ')'; ctx.fill();
+
+                // dorsal fin
+                ctx.beginPath(); ctx.moveTo(bx + w * .1, by - h * .38); ctx.bezierCurveTo(bx + w * .05, by - h * .7, bx - w * .2, by - h * .72, bx - w * .3, by - h * .42); ctx.bezierCurveTo(bx - w * .15, by - h * .38, bx, by - h * .36, bx + w * .1, by - h * .38);
+                ctx.fillStyle = 'rgba(60,20,130,' + (.25 * visib) + ')'; ctx.fill();
+
+                // iridescent scale overlay
+                for (var i = 0; i < 6; i++) {
+                    var sx = bx + w * (.3 - i * .1), sy = by + Math.sin(t * .5 + i) * (h * .04);
+                    var irid = ctx.createRadialGradient(sx, sy, 0, sx, sy, w * .12);
+                    irid.addColorStop(0, 'rgba(' + (50 + i * 18) + ',' + (100 + i * 12) + ',' + (200 - i * 15) + ',' + (.08 * visib) + ')');
+                    irid.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = irid; ctx.beginPath(); ctx.ellipse(sx, sy, w * .12, h * .22, 0, 0, Math.PI * 2); ctx.fill();
+                }
+
+                // ─── VESSEL NETWORK ───
+                ctx.lineWidth = 2.5 * visib;
+                // Dorsal aorta (spine)
+                var daFlow = (Math.sin(t * 3 * G.speed + pulse * 2) * .5 + .5) * visib;
+                ctx.strokeStyle = 'rgba(255,45,85,' + (.45 + daFlow * .4) + ')';
+                ctx.shadowBlur = 8 * visib; ctx.shadowColor = 'rgba(255,45,85,.5)';
+                ctx.beginPath(); ctx.moveTo(bx + w * .42, by - h * .02); ctx.bezierCurveTo(bx, by - h * .04, bx - w * .2, by - h * .02, bx - w * .46, by - h * .01); ctx.stroke();
+
+                // Ventral vessel
+                ctx.strokeStyle = 'rgba(0,180,255,' + (.3 + daFlow * .3) + ')'; ctx.shadowColor = 'rgba(0,180,255,.4)';
+                ctx.beginPath(); ctx.moveTo(bx + w * .38, by + h * .12); ctx.bezierCurveTo(bx, by + h * .14, bx - w * .2, by + h * .12, bx - w * .44, by + h * .1); ctx.stroke();
+
+                // Gill network (branching near head)
+                for (var i = 0; i < 5; i++) {
+                    var gx = bx + w * (.38 - .03 * i), gy = by - h * (.06 + i * .04);
+                    var gl2 = ctx.createLinearGradient(gx, gy, gx - w * .04, gy + h * .06);
+                    var gillPulse = (Math.sin(t * 5 + pulse * 3 + i) * .5 + .5) * visib;
+                    gl2.addColorStop(0, 'rgba(255,' + (80 + i * 15) + ',50,' + (.3 + gillPulse * .3) + ')');
+                    gl2.addColorStop(1, 'rgba(255,100,60,0)');
+                    ctx.strokeStyle = gl2; ctx.lineWidth = 1.2 * visib;
+                    ctx.beginPath(); ctx.moveTo(gx, gy); ctx.quadraticCurveTo(gx - w * .02, gy + h * .04, gx - w * .04, gy + h * .08); ctx.stroke();
+                }
+
+                // Capillary lattice (fine)
+                ctx.shadowBlur = 0; ctx.globalAlpha = .08 * visib;
+                for (var i = 0; i < 8; i++) {
+                    var lx = bx + w * (.3 - i * .1), ly = by;
+                    ctx.strokeStyle = 'rgba(0,255,100,.6)'; ctx.lineWidth = .7 * visib;
+                    ctx.beginPath(); ctx.moveTo(lx, ly - h * .25); ctx.lineTo(lx + (Math.random() - .5) * w * .04, ly + h * .25); ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+
+                // Heart glow
+                heartPulse = Math.pow(Math.sin(t * 1.18 * G.speed), 8);
+                var hx = bx + w * .22, hy = by - h * .04;
+                var hGrd = ctx.createRadialGradient(hx, hy, 0, hx, hy, w * .12);
+                hGrd.addColorStop(0, 'rgba(255,45,85,' + (.5 + heartPulse * .45) * visib + ')');
+                hGrd.addColorStop(.5, 'rgba(255,45,85,' + (.15 * visib) + ')');
+                hGrd.addColorStop(1, 'rgba(255,45,85,0)');
+                ctx.fillStyle = hGrd; ctx.beginPath(); ctx.arc(hx, hy, w * .12, 0, Math.PI * 2); ctx.fill();
+
+                // Eye
+                ctx.shadowBlur = 6 * visib; ctx.shadowColor = 'rgba(0,255,200,.6)';
+                ctx.fillStyle = 'rgba(2,6,18,' + (.95 * visib) + ')'; ctx.beginPath(); ctx.ellipse(bx + w * .42, by - h * .1, w * .045, h * .09, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(0,230,200,' + (.7 * visib) + ')'; ctx.beginPath(); ctx.ellipse(bx + w * .43, by - h * .1, w * .022, h * .045, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(255,255,255,' + (.9 * visib) + ')'; ctx.beginPath(); ctx.arc(bx + w * .43, by - h * .115, w * .008, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+
+                ctx.restore();
+            }
+
+            // ─── PARTICLES ───
+            function RBC() { this.reset(true) }
+            RBC.prototype.reset = function (r) {
+                this.mode = 'a'; this.t = r ? Math.random() : 0; this.oy = (Math.random() - .5) * 12; this.oz = (Math.random() - .5) * .5;
+                this.sp = .36 + Math.random() * .82; this.ci = Math.floor(Math.random() * Math.max(1, caps.length));
+                this.sz = 2.5 + Math.random() * 2.4; this.ct = 0; this.trail = []; this.mt = Math.floor(6 + Math.random() * 9);
+            };
+            RBC.prototype.update = function () {
+                if (G.paused || !caps.length) return;
+                var spd = (.0033 + heartPulse * .008) * G.speed * (1 - G.viscosity * .45);
+                if (this.mode === 'a') {
+                    this.t += spd * this.sp; if (this.t > 1) this.t = 0;
+                    this.px = -W * .1 + this.t * (W * 1.2); this.py = aY + this.oy;
+                    if (caps[this.ci] && this.px > caps[this.ci].x1 - 10 && Math.random() > .984) this.mode = 'c';
+                } else if (this.mode === 'c') {
+                    this.ct += .005 * this.sp * G.speed;
+                    if (this.ct >= 1) { this.mode = 'v'; this.t = 1; return }
+                    var c = caps[this.ci], tt = this.ct;
+                    this.px = Math.pow(1 - tt, 3) * c.x1 + 3 * Math.pow(1 - tt, 2) * tt * c.cx1 + 3 * (1 - tt) * tt * tt * c.cx2 + tt * tt * tt * c.x2;
+                    this.py = Math.pow(1 - tt, 3) * c.y1 + 3 * Math.pow(1 - tt, 2) * tt * c.cy1 + 3 * (1 - tt) * tt * tt * c.cy2 + tt * tt * tt * c.y2;
+                } else {
+                    this.t -= spd * .68 * this.sp; if (this.t < 0) { this.reset(); return }
+                    this.px = -W * .1 + this.t * (W * 1.2); this.py = vY + this.oy;
+                }
+                this.trail.unshift({ x: this.px, y: this.py });
+                if (this.trail.length > this.mt) this.trail.pop();
+            };
+            RBC.prototype.draw = function () {
+                if (typeof this.px === 'undefined') return;
+                var s = this.sz * (1 + heartPulse * .1) * (0.78 + this.oz * .22) * zoom;
+                var r2, g2, b2;
+                if (this.mode === 'a') { r2 = 255; g2 = 44; b2 = 78 }
+                else if (this.mode === 'v') { r2 = 16; g2 = 142; b2 = 255 }
+                else { var rt = this.ct; r2 = Math.floor(255 * (1 - rt)); g2 = 48; b2 = Math.floor(78 + rt * 177) }
+                for (var i = 0; i < this.trail.length; i++) {
+                    var tr = this.trail[i], fa = (1 - i / this.trail.length) * .14 * zoom;
+                    ctx.fillStyle = 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',' + fa + ')';
+                    ctx.beginPath(); ctx.ellipse(tr.x, tr.y, Math.max(.5, s * .78 * (1 - i / this.trail.length * .3)), Math.max(.3, s * .44 * (1 - i / this.trail.length * .3)), 0, 0, Math.PI * 2); ctx.fill();
+                }
+                ctx.fillStyle = 'rgba(0,0,0,' + (0.2 * (1 - this.oz * .36)) + ')';
+                ctx.beginPath(); ctx.ellipse(this.px + 1.5, this.py + 2.5, Math.max(.5, s * .75), Math.max(.3, s * .42), 0, 0, Math.PI * 2); ctx.fill();
+                var grd = ctx.createRadialGradient(this.px - s * .2, this.py - s * .2, 0, this.px, this.py, Math.max(.1, s));
+                grd.addColorStop(0, 'rgba(' + Math.min(255, r2 + 52) + ',' + Math.min(255, g2 + 36) + ',' + Math.min(255, b2 + 26) + ',.97)');
+                grd.addColorStop(.6, 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',.92)');
+                grd.addColorStop(1, 'rgba(' + Math.max(0, r2 - 46) + ',' + Math.max(0, g2 - 17) + ',' + Math.max(0, b2 - 17) + ',.72)');
+                ctx.shadowBlur = 8 * zoom; ctx.shadowColor = 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',.25)';
+                ctx.fillStyle = grd; ctx.beginPath(); ctx.ellipse(this.px, this.py, Math.max(.5, s), Math.max(.3, s * .54), 0, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'rgba(' + Math.max(0, r2 - 62) + ',' + Math.max(0, g2 - 26) + ',' + Math.max(0, b2 - 17) + ',.24)';
+                ctx.beginPath(); ctx.ellipse(this.px, this.py, Math.max(.2, s * .26), Math.max(.1, s * .17), 0, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(255,255,255,.2)';
+                ctx.beginPath(); ctx.ellipse(this.px - s * .18, this.py - s * .18, Math.max(.1, s * .22), Math.max(.1, s * .14), -.4, 0, Math.PI * 2); ctx.fill();
+            };
+
+            function WBC() { this.reset(true) }
+            WBC.prototype.reset = function (r) { this.t = r ? Math.random() : 0; this.oy = (Math.random() - .5) * 8; this.sp = .07 + Math.random() * .16; this.sz = 5 + Math.random() * 2.8; this.wb = Math.random() * Math.PI * 2 };
+            WBC.prototype.update = function () {
+                if (G.paused) return;
+                this.t += (.0014 + heartPulse * .0028) * this.sp * G.speed; if (this.t > 1) this.t = 0;
+                this.px = -W * .1 + this.t * (W * 1.2); this.py = aY + this.oy; this.wb += .036;
+            };
+            WBC.prototype.draw = function () {
+                var s = this.sz * zoom; if (s < .5) return;
+                ctx.shadowBlur = 10 * zoom; ctx.shadowColor = 'rgba(165,192,255,.25)';
+                ctx.fillStyle = 'rgba(165,192,255,.09)'; ctx.beginPath();
+                for (var a = 0; a < Math.PI * 2; a += .33) {
+                    var rx = s * (0.8 + 0.28 * Math.sin(a * 3 + this.wb)), ry = rx * .63;
+                    var x = this.px + Math.cos(a) * rx, y = this.py + Math.sin(a) * ry;
+                    a < .01 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                }
+                ctx.closePath(); ctx.fill();
+                ctx.fillStyle = 'rgba(115,150,255,.17)'; ctx.beginPath(); ctx.ellipse(this.px - s * .1, this.py, Math.max(.2, s * .36), Math.max(.1, s * .26), -.26, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+            };
+
+            function Plasma() { this.reset(true) }
+            Plasma.prototype.reset = function (r) { this.isA = Math.random() > .5; this.t = r ? Math.random() : 0; this.oy = (Math.random() - .5) * 15; this.sp = 1.1 + Math.random() * 2; this.sz = .65 + Math.random() * 1.1; this.al = .06 + Math.random() * .15 };
+            Plasma.prototype.update = function () {
+                if (G.paused) return;
+                var s = .005 + heartPulse * .011;
+                if (this.isA) { this.t += s * this.sp * G.speed; if (this.t > 1) this.t = 0 }
+                else { this.t -= s * this.sp * .63 * G.speed; if (this.t < 0) this.t = 1 }
+                this.px = -W * .1 + this.t * (W * 1.2); this.py = (this.isA ? aY : vY) + this.oy;
+            };
+            Plasma.prototype.draw = function () {
+                ctx.fillStyle = this.isA ? 'rgba(255,190,190,' + (this.al * zoom) + ')' : 'rgba(150,192,255,' + (this.al * zoom) + ')';
+                ctx.beginPath(); ctx.arc(this.px, this.py, Math.max(.3, this.sz * zoom), 0, Math.PI * 2); ctx.fill();
+            };
+
+            var maxR = Math.min(550, Math.floor(W * H / 2800));
+            var rbcs = [], wbcs = [], plas = [];
+            for (var i = 0; i < maxR; i++)rbcs.push(new RBC());
+            for (var i = 0; i < 5; i++)wbcs.push(new WBC());
+            for (var i = 0; i < Math.min(320, Math.floor(W * H / 5200)); i++)plas.push(new Plasma());
+
+            window._setDensity = function (v) {
+                var target = Math.floor(40 + v * (maxR - 40));
+                while (rbcs.length < target) rbcs.push(new RBC());
+                while (rbcs.length > target && rbcs.length > 1) rbcs.pop();
+            };
+
+            function drawBg(t) {
+                // deep background with vessel glow
+                var bg = ctx.createRadialGradient(W / 2, H * .46, 0, W / 2, H * .5, Math.max(W, H) * .82);
+                bg.addColorStop(0, 'rgba(6,10,26,1)'); bg.addColorStop(.55, 'rgba(3,6,16,1)'); bg.addColorStop(1, 'rgba(1,2,8,1)');
+                ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+                // grid
+                ctx.strokeStyle = 'rgba(0,229,255,.013)'; ctx.lineWidth = 1;
+                for (var x = 0; x < W; x += 64) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke() }
+                for (var y = 0; y < H; y += 64) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke() }
+                // artery background glow
+                var pulse = heartPulse;
+                ctx.strokeStyle = 'rgba(255,45,85,' + (pulse * .12) + ')'; ctx.lineWidth = (24 + pulse * 55) * zoom;
+                ctx.beginPath(); ctx.moveTo(-W * .15, aY); ctx.lineTo(W * 1.15, aY); ctx.stroke();
+                ctx.strokeStyle = 'rgba(0,229,255,' + (pulse * .08) + ')'; ctx.lineWidth = (22 + pulse * 35) * zoom;
+                ctx.beginPath(); ctx.moveTo(-W * .15, vY); ctx.lineTo(W * 1.15, vY); ctx.stroke();
+            }
+
+            function drawTube(y, c1, c2, glow, ex) {
+                ex = ex || 0;
+                ctx.strokeStyle = 'rgba(0,0,0,.52)'; ctx.lineWidth = (23 + ex) * zoom; ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(-W * .14, y + 4); ctx.lineTo(W * 1.14, y + 4); ctx.stroke();
+                var g = ctx.createLinearGradient(0, y - (20 + ex), 0, y + (20 + ex));
+                g.addColorStop(0, c1); g.addColorStop(.38, c2); g.addColorStop(.62, c2); g.addColorStop(1, c1);
+                ctx.strokeStyle = g; ctx.lineWidth = (18 + ex) * zoom; ctx.shadowBlur = 22 * zoom; ctx.shadowColor = glow;
+                ctx.beginPath(); ctx.moveTo(-W * .14, y); ctx.lineTo(W * 1.14, y); ctx.stroke(); ctx.shadowBlur = 0;
+                // specular
+                ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 3 * zoom;
+                ctx.beginPath(); ctx.moveTo(-W * .14, y - 7 * zoom); ctx.lineTo(W * 1.14, y - 7 * zoom); ctx.stroke();
+                // parallax wall
+                ctx.globalAlpha = .05; ctx.strokeStyle = c2; ctx.lineWidth = .65 * zoom;
+                for (var x = -W * .1; x < W * 1.1; x += 25 * zoom) {
+                    ctx.beginPath(); ctx.moveTo((x + tubeOff * zoom) % (25 * zoom + 1), y - (14 + ex) * .52 * zoom);
+                    ctx.lineTo((x + tubeOff * zoom) % (25 * zoom + 1), y + (14 + ex) * .52 * zoom); ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            function drawCaps() {
+                meshT += .007;
+                caps.forEach(function (c, idx) {
+                    var steps = 14;
+                    for (var i = 0; i < steps; i++) {
+                        var t0 = i / steps, t1 = (i + 1) / steps, mx = (Math.sin(meshT + idx * .42 + t0 * 3.2) + 1) / 2, al = .03 + mx * .08;
+                        var r2 = Math.floor(255 * (1 - t0)), b2 = Math.floor(78 + t0 * 177);
+                        ctx.strokeStyle = 'rgba(' + r2 + ',48,' + b2 + ',' + al + ')'; ctx.lineWidth = 1.5 * zoom;
+                        function bz(tt) { return { x: Math.pow(1 - tt, 3) * c.x1 + 3 * Math.pow(1 - tt, 2) * tt * c.cx1 + 3 * (1 - tt) * tt * tt * c.cx2 + tt * tt * tt * c.x2, y: Math.pow(1 - tt, 3) * c.y1 + 3 * Math.pow(1 - tt, 2) * tt * c.cy1 + 3 * (1 - tt) * tt * tt * c.cy2 + tt * tt * tt * c.y2 } }
+                        var p0 = bz(t0), p1 = bz(t1); ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+                    }
+                });
+            }
+
+            function drawLabels(nh) {
+                var cY = H - nh - 12, fs = Math.max(8.5, Math.min(11, W * .0095));
+                ctx.save(); ctx.textBaseline = 'middle';
+                function labelBox(y, label, sub, col) {
+                    ctx.fillStyle = 'rgba(0,0,0,.58)'; ctx.fillRect(0, y + 21, 130 + fs * 3.2, fs * 2 + 11);
+                    ctx.fillStyle = col; ctx.fillRect(0, y + 21, 2, fs * 2 + 11);
+                    ctx.font = '800 ' + (fs + .5) + 'px Syne,sans-serif'; ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.fillText(label, 13, y + 21 + fs / 2 + 3);
+                    ctx.font = '400 ' + (fs - 2) + 'px Space Grotesk,sans-serif'; ctx.fillStyle = 'rgba(255,255,255,.48)'; ctx.fillText(sub, 13, y + 21 + fs + 5);
+                }
+                labelBox(aY, '▶ ARTERY — O₂', 'HIGH PRESSURE | O₂ RICH', 'rgba(255,58,88,.9)');
+                labelBox(vY, '◀ VEIN — CO₂', 'LOW PRESSURE | CO₂ RICH | VALVE', 'rgba(16,220,255,.9)');
+                // HEAD/TAIL corners
+                ctx.fillStyle = 'rgba(0,0,0,.58)'; ctx.fillRect(0, cY - fs - 4, 104 + fs * 2.6, fs * 2 + 11);
+                ctx.fillStyle = 'rgba(255,45,85,.8)'; ctx.fillRect(0, cY - fs - 4, 2, fs * 2 + 11);
+                ctx.font = '800 ' + (fs + .5) + 'px Syne,sans-serif'; ctx.fillStyle = 'rgba(255,58,88,1)'; ctx.textAlign = 'left'; ctx.fillText('◀ HEAD', 13, cY - 1);
+                ctx.font = '400 ' + (fs - 2) + 'px Space Grotesk,sans-serif'; ctx.fillStyle = 'rgba(255,145,145,.58)'; ctx.fillText('หัวใจ | เหงือก', 13, cY + fs);
+                var tw = 120 + fs * 2.6;
+                ctx.fillStyle = 'rgba(0,0,0,.58)'; ctx.fillRect(W - tw, cY - fs - 4, tw, fs * 2 + 11);
+                ctx.fillStyle = 'rgba(0,229,255,.8)'; ctx.fillRect(W - 2, cY - fs - 4, 2, fs * 2 + 11);
+                ctx.font = '800 ' + (fs + .5) + 'px Syne,sans-serif'; ctx.fillStyle = 'rgba(16,220,255,1)'; ctx.textAlign = 'right'; ctx.fillText('TAIL ▶', W - 13, cY - 1);
+                ctx.font = '400 ' + (fs - 2) + 'px Space Grotesk,sans-serif'; ctx.fillStyle = 'rgba(126,176,255,.58)'; ctx.fillText('ครีบ | หาง', W - 13, cY + fs);
+                ctx.restore();
+            }
+
+            var st = performance.now(), visib = 0;
+            (function loop(now) {
+                requestAnimationFrame(loop);
+                var t = (now - st) * .001;
+                heartPulse = Math.pow(Math.abs(Math.sin(t * 1.18 * G.speed)), 8);
+                if (simStarted && zoom < 1) zoom = Math.min(1, zoom + .0018);
+                if (simStarted && visib < 1) visib = Math.min(1, visib + .004);
+                if (!G.paused) tubeOff += (1 + heartPulse * 2) * G.speed;
+
+                ctx.clearRect(0, 0, W, H);
+                drawBg(t);
+
+                ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-W / 2, -H / 2);
+
+                // Draw fish in the CENTER, between the two vessels
+                var fishCX = W * .5, fishCY = H * .5, fishW = Math.min(W * .28, 320), fishH = fishW * .28;
+                drawFish(fishCX, fishCY, fishW, fishH, t, heartPulse, visib);
+
+                // Tubes OVER fish base but UNDER particles (draw after fish for correct layering)
+                var px = heartPulse * (G.turbo ? 7 : 3.8);
+                drawTube(aY, 'rgba(50,5,13,.82)', 'rgba(158,14,38,.92)', 'rgba(255,45,85,.4)', px);
+                drawTube(vY, 'rgba(2,12,55,.82)', 'rgba(6,45,158,.9)', 'rgba(0,229,255,.33)', px * .5);
+                drawCaps();
+
+                plas.forEach(p => { p.update(); p.draw() });
+                wbcs.forEach(w => { w.update(); w.draw() });
+                rbcs.forEach(r => r.update());
+                rbcs.sort((a, b) => a.oz - b.oz);
+                rbcs.forEach(r => r.draw());
+
+                ctx.restore();
+
+                var nh = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nh')) || 54;
+                if (simStarted) drawLabels(nh);
+
+                var me = document.getElementById('mg'); if (me) me.textContent = String(Math.floor(zoom * 338)).padStart(3, '0');
+                var mb2 = document.getElementById('mb'); if (mb2) mb2.style.width = (zoom * 93) + '%';
+            })(performance.now());
+
+            window._vesselAt = function (y) {
+                if (!aY) return '';
+                if (Math.abs(y - aY) < 22 * (zoom || 1) + 12) return 'ARTERY';
+                if (Math.abs(y - vY) < 20 * (zoom || 1) + 12) return 'VEIN';
+                if (y > aY + 22 && y < vY - 22) return 'CAPILLARY';
+                return '';
+            };
+        })();
+
+        // ══════════════════════════════════════════
+        // MICRO-ZOOM CANVAS
+        // ══════════════════════════════════════════
+        (function () {
+            var C, ctx, active = false, t2 = 0;
+            var cells = [{ bx: .18, by: .35, sz: 22, ph: 0, r: 255, g: 50, b: 78 }, { bx: .48, by: .55, sz: 19, ph: 1.3, r: 255, g: 50, b: 78 }, { bx: .76, by: .28, sz: 21, ph: 2.5, r: 255, g: 50, b: 78 }, { bx: .32, by: .68, sz: 17, ph: .8, r: 255, g: 50, b: 78 }, { bx: .62, by: .72, sz: 15, ph: 2, r: 16, g: 142, b: 255 }, { bx: .88, by: .6, sz: 16, ph: 1.1, r: 16, g: 142, b: 255 }];
+            function init() {
+                C = document.getElementById('c-mz2'); if (!C) return; ctx = C.getContext('2d');
+                var dpr = Math.min(devicePixelRatio || 1, 2);
+                C.width = 240 * dpr; C.height = 260 * dpr; C.style.width = '240px'; C.style.height = '260px';
+                ctx.scale(dpr, dpr);
+            }
+            window._openMZ = function () { active = true; if (!ctx) init() };
+            window._closeMZ = function () { active = false };
+            (function loop() {
+                requestAnimationFrame(loop);
+                if (!active || !ctx) return;
+                t2 += .02;
+                var W = 240, H = 260;
+                ctx.fillStyle = 'rgba(1,3,11,.58)'; ctx.fillRect(0, 0, W, H);
+                ctx.strokeStyle = 'rgba(0,229,255,.04)'; ctx.lineWidth = .5;
+                for (var x = 0; x < W; x += 22) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke() }
+                for (var y = 0; y < H; y += 22) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke() }
+                for (var i = 0; i < 16; i++) {
+                    var ang = t2 * .28 + i * (Math.PI * 2 / 16);
+                    ctx.fillStyle = 'rgba(255,180,180,' + (0.03 + Math.sin(t2 + i) * .02) + ')';
+                    ctx.beginPath(); ctx.arc(W * .5 + Math.cos(ang) * W * .42, H * .5 + Math.sin(ang) * H * .4, 1, 0, Math.PI * 2); ctx.fill();
+                }
+                cells.forEach(function (c) {
+                    var px = c.bx * W, py = c.by * H, pulse2 = Math.sin(t2 * 1.1 + c.ph) * .06, s = c.sz * (1 + pulse2);
+                    ctx.strokeStyle = 'rgba(' + Math.max(0, c.r - 55) + ',' + Math.max(0, c.g - 22) + ',' + Math.max(0, c.b - 22) + ',.35)';
+                    ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(px, py, s * 1.06, s * .6, 0, 0, Math.PI * 2); ctx.stroke();
+                    ctx.shadowBlur = s * 1.2; ctx.shadowColor = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',.3)';
+                    var grd = ctx.createRadialGradient(px - s * .22, py - s * .22, 0, px, py, s);
+                    grd.addColorStop(0, 'rgba(' + Math.min(255, c.r + 55) + ',' + Math.min(255, c.g + 38) + ',' + Math.min(255, c.b + 26) + ',.97)');
+                    grd.addColorStop(.6, 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',.92)');
+                    grd.addColorStop(1, 'rgba(' + Math.max(0, c.r - 50) + ',' + Math.max(0, c.g - 20) + ',' + Math.max(0, c.b - 20) + ',.7)');
+                    ctx.fillStyle = grd; ctx.beginPath(); ctx.ellipse(px, py, s, s * .55, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.shadowBlur = 0;
+                    var dep = ctx.createRadialGradient(px, py, 0, px, py, s * .33);
+                    dep.addColorStop(0, 'rgba(' + Math.max(0, c.r - 76) + ',' + Math.max(0, c.g - 32) + ',' + Math.max(0, c.b - 24) + ',.42)');
+                    dep.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = dep; ctx.beginPath(); ctx.ellipse(px, py, s * .33, s * .2, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.ellipse(px - s * .21, py - s * .21, s * .26, s * .16, -.42, 0, Math.PI * 2); ctx.fill();
+                });
+                ctx.strokeStyle = 'rgba(0,229,255,.46)'; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(W - 38, H - 11); ctx.lineTo(W - 11, H - 11); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(W - 38, H - 14); ctx.lineTo(W - 38, H - 8); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(W - 11, H - 14); ctx.lineTo(W - 11, H - 8); ctx.stroke();
+                ctx.font = '500 7.5px JetBrains Mono,monospace'; ctx.fillStyle = 'rgba(0,229,255,.5)'; ctx.textAlign = 'center';
+                ctx.fillText('10 μm', W - 24.5, H - 3);
+            })();
+        })();
+
+        // ══════════════════════════════════════════
+        // SOUND REACTIVE
+        // ══════════════════════════════════════════
+        var beatBars = [];
+        (function () {
+            var bar = document.getElementById('beat'); var n = 30;
+            for (var i = 0; i < n; i++) {
+                var d = document.createElement('div'); d.className = 'bb';
+                d.style.background = i < n * .38 ? 'var(--r)' : i < n * .72 ? 'var(--am)' : 'var(--g)';
+                bar.appendChild(d);
+            }
+            beatBars = Array.from(bar.querySelectorAll('.bb'));
+        })();
+        var micAC, micAn, micData, micActive = false, autoBeatOn = false, autoBeatT = 0;
+        function toggleMic() {
+            if (micActive) { micActive = false; document.getElementById('btn-mic').classList.remove('on'); document.getElementById('sr-status').textContent = 'OFF'; document.getElementById('beat').classList.remove('on'); return }
+            navigator.mediaDevices && navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+                micAC = new AudioContext(); micAn = micAC.createAnalyser(); micAn.fftSize = 64;
+                micAC.createMediaStreamSource(stream).connect(micAn);
+                micData = new Uint8Array(micAn.frequencyBinCount);
+                micActive = true; document.getElementById('btn-mic').classList.add('on');
+                document.getElementById('sr-status').textContent = 'MIC'; document.getElementById('beat').classList.add('on'); sfxC();
+            }).catch(() => { document.getElementById('sr-status').textContent = 'NO MIC' });
+        }
+        function toggleBeat() {
+            autoBeatOn = !autoBeatOn; G.beatOn = autoBeatOn;
+            document.getElementById('btn-beat').classList.toggle('on', autoBeatOn);
+            document.getElementById('beat').classList.toggle('on', autoBeatOn);
+            document.getElementById('sr-status').textContent = autoBeatOn ? 'AUTO' : micActive ? 'MIC' : 'OFF'; sfxC();
+        }
+        setInterval(function () {
+            var level = 0, bdata = [];
+            if (micActive && micAn) { micAn.getByteFrequencyData(micData); var sum = 0; for (var i = 0; i < micData.length; i++)sum += micData[i]; level = sum / micData.length / 255; bdata = Array.from(micData).map(v => (v / 255) * 14); }
+            else if (autoBeatOn) { autoBeatT += .06 * G.speed; level = Math.pow(Math.max(0, Math.sin(autoBeatT * Math.PI)), 3); bdata = beatBars.map((_, i) => Math.max(1, (Math.sin(autoBeatT * 2 + i * .35) + 1) * 7 * (.3 + level * .7) + Math.random() * 1.5)); }
+            else { bdata = beatBars.map((_, i) => Math.max(1, heartPulseG * (i % 3 === 0 ? 6 : 3))); level = heartPulseG * .4; }
+            G.soundLevel = level;
+            if ((autoBeatOn || micActive) && !G.turbo) { G.speed = 1 + level * 2.5; document.getElementById('sl-spd').value = Math.round(G.speed * 22); document.getElementById('sv-spd').textContent = Math.round(G.speed * 22); }
+            beatBars.forEach((b, i) => { b.style.height = Math.max(2, (bdata[i] || 1.5)) + 'px' });
+            document.getElementById('sr-amp').textContent = Math.round(level * 100) + '%';
+            document.getElementById('sr-bar').style.width = Math.round(level * 100) + '%';
+            document.getElementById('sr-bpm').textContent = autoBeatOn ? '72 BPM' : micActive ? 'LIVE' : '--';
+        }, 55);
+        var heartPulseG = 0; setInterval(() => heartPulseG = Math.pow(Math.abs(Math.sin(Date.now() * .001 * 1.18 * G.speed)), 8), 50);
+
+        // ══════════════════════════════════════════
+        // INTRO BOOT
+        // ══════════════════════════════════════════
+        var LOGS = ['LOADING NEURAL INTERFACE...', 'BUILDING FISH MESH...', 'COMPILING VESSEL NETWORK...', 'INJECTING RBC PARTICLES...', 'WBC + PLASMA SYSTEM INIT...', 'CARDIAC MONITOR ONLINE...', 'MICRO-ZOOM MODULE READY...', 'SOUND REACTIVE ACTIVE...', 'ALL SYSTEMS NOMINAL'];
+        var step = 0;
+        function tick() {
+            if (step >= LOGS.length) { document.getElementById('ilog').textContent = 'READY — CLICK TO INITIALIZE'; document.getElementById('launch').classList.add('show'); return }
+            document.getElementById('ilog').textContent = LOGS[step];
+            var pct = Math.round((step + 1) / LOGS.length * 100);
+            document.getElementById('ibf').style.width = pct + '%'; document.getElementById('ipct').textContent = String(pct).padStart(3, '0');
+            step++; setTimeout(tick, 200 + Math.random() * 130);
+        }
+        setTimeout(tick, 500);
+        document.getElementById('launch').onclick = function () {
+            sfxO(); simStarted = true;
+            document.getElementById('va').play().catch(() => { });
+            document.getElementById('intro').classList.add('out');
+            setTimeout(() => { document.getElementById('intro').style.display = 'none'; document.getElementById('hud').classList.add('on') }, 2100);
+            setInterval(() => {
+                var bv = document.getElementById('bv'); if (bv) bv.textContent = 66 + Math.floor(Math.random() * 18);
+                var tv = document.getElementById('tmp'); if (tv) tv.textContent = (25.7 + Math.random() * .6).toFixed(1) + '°C';
+                var rv = document.getElementById('rbc'); if (rv) rv.textContent = (2.05 + Math.random() * .42).toFixed(2) + 'M/μL';
+            }, 1700);
+        };
+        setInterval(() => { var c = document.getElementById('clk'); if (c) c.textContent = new Date().toLocaleTimeString('en-US', { hour12: false }) }, 1000);
+
+        // ══════════════════════════════════════════
+        // CONTROLS
+        // ══════════════════════════════════════════
+        document.getElementById('sl-spd').addEventListener('input', function () { document.getElementById('sv-spd').textContent = this.value; G.speed = 0.08 + this.value * .019 });
+        document.getElementById('sl-rbc').addEventListener('input', function () { document.getElementById('sv-rbc').textContent = this.value; window._setDensity && window._setDensity(this.value / 100) });
+        document.getElementById('sl-vis').addEventListener('input', function () { document.getElementById('sv-vis').textContent = this.value; G.viscosity = this.value / 100 });
+        function togglePause() { G.paused = !G.paused; sfxC(); var b = document.getElementById('btn-pau'); b.textContent = G.paused ? '▶ RESUME' : '⏸ PAUSE'; b.classList.toggle('on', G.paused) }
+        function toggleTurbo() { G.turbo = !G.turbo; sfxC(); G.speed = G.turbo ? 3.5 : 1; document.getElementById('sl-spd').value = G.turbo ? 92 : 50; document.getElementById('sv-spd').textContent = G.turbo ? 92 : 50; document.getElementById('btn-trb').classList.toggle('on', G.turbo) }
+        function openMZ() { document.getElementById('mzmod').classList.add('on'); window._openMZ && window._openMZ(); document.getElementById('btn-mzz').classList.add('on'); sfxO() }
+        function closeMZ() { document.getElementById('mzmod').classList.remove('on'); window._closeMZ && window._closeMZ(); document.getElementById('btn-mzz').classList.remove('on') }
+
+        // ══════════════════════════════════════════
+        // HOVER + TOOLTIP
+        // ══════════════════════════════════════════
+        var vhl = document.getElementById('vhl');
+        document.addEventListener('mousemove', function (e) {
+            var v = window._vesselAt && window._vesselAt(e.clientY);
+            if (v) {
+                var map = { ARTERY: ['ARTERY — O₂ RICH | HIGH PRESSURE', 'var(--r)'], VEIN: ['VEIN — CO₂ RICH | LOW PRESSURE | VALVE', 'var(--b)'], CAPILLARY: ['CAPILLARY NETWORK — GAS EXCHANGE | 5–10μm', 'var(--g)'] };
+                var info = map[v]; vhl.textContent = info[0]; vhl.style.left = Math.min(e.clientX + 15, innerWidth - 252) + 'px'; vhl.style.top = Math.max(e.clientY - 29, 8) + 'px'; vhl.style.borderLeftColor = info[1]; vhl.style.color = info[1]; vhl.classList.add('on');
+            } else vhl.classList.remove('on');
+        });
+        var TIPS = { artery: { title: 'ARTERY — หลอดเลือดแดง', body: 'นำเลือด O₂ สูงจากหัวใจ ผนัง 3 ชั้น Tunica Media หนา' }, cap: { title: 'CAPILLARY — หลอดเลือดฝอย', body: '5–10 μm ผนัง 1 ชั้น แลกเปลี่ยน O₂/CO₂' }, vein: { title: 'VEIN — หลอดเลือดดำ', body: 'นำ CO₂ กลับหัวใจ มี Valve ป้องกัน backflow' } };
+        var tip = document.getElementById('tip');
+        document.querySelectorAll('.card[data-tip]').forEach(el => {
+            el.addEventListener('mouseenter', () => { var d = TIPS[el.dataset.tip]; if (!d) return; document.getElementById('tip-t').textContent = d.title; document.getElementById('tip-b').textContent = d.body; tip.classList.add('on'); sfxScan() });
+            el.addEventListener('mousemove', e => { tip.style.left = Math.min(e.clientX + 17, innerWidth - 218) + 'px'; tip.style.top = Math.max(e.clientY - 11, 8) + 'px' });
+            el.addEventListener('mouseleave', () => tip.classList.remove('on'));
+        });
+
+        // ══════════════════════════════════════════
+        // INFO PANELS + DRAG
+        // ══════════════════════════════════════════
+        var infoOpen = false, pState = { a: true, c: true, v: true, d: false };
+        function toggleInfo(btn) { infoOpen = !infoOpen; document.getElementById('ptog').style.display = infoOpen ? 'flex' : 'none'; btn.classList.toggle('on', infoOpen);['a', 'c', 'v', 'd'].forEach(k => { var fp = document.getElementById('fp-' + k); if (!infoOpen) fp.classList.add('hidden'); else { if (pState[k]) fp.classList.remove('hidden'); else fp.classList.add('hidden') } }) }
+        function togglePanel(k, btn) { pState[k] = !pState[k]; var fp = document.getElementById('fp-' + k); if (pState[k]) fp.classList.remove('hidden'); else fp.classList.add('hidden'); if (btn) btn.classList.toggle('active', pState[k]) }
+        ['fp-a', 'fp-c', 'fp-v', 'fp-d'].forEach(id => {
+            var el = document.getElementById(id), drag = false, ox = 0, oy = 0;
+            el.addEventListener('mousedown', e => { if (e.target.classList.contains('fp-x')) return; drag = true; ox = e.clientX - el.offsetLeft; oy = e.clientY - el.offsetTop; el.style.transition = 'none'; el.style.cursor = 'grabbing' });
+            document.addEventListener('mousemove', e => { if (!drag) return; el.style.left = (e.clientX - ox) + 'px'; el.style.top = (e.clientY - oy) + 'px'; el.style.transform = 'none'; el.style.right = 'auto'; el.style.bottom = 'auto' });
+            document.addEventListener('mouseup', () => { drag = false; el.style.cursor = ''; el.style.transition = '' });
+            el.addEventListener('touchstart', e => { if (e.target.classList.contains('fp-x')) return; var t = e.touches[0]; drag = true; ox = t.clientX - el.offsetLeft; oy = t.clientY - el.offsetTop; el.style.transition = 'none' }, { passive: true });
+            document.addEventListener('touchmove', e => { if (!drag) return; var t = e.touches[0]; el.style.left = (t.clientX - ox) + 'px'; el.style.top = (t.clientY - oy) + 'px'; el.style.transform = 'none'; el.style.right = 'auto'; el.style.bottom = 'auto' }, { passive: true });
+            document.addEventListener('touchend', () => { drag = false; el.style.transition = '' });
+        });
+
+        // ══════════════════════════════════════════
+        // NAV + QUIZ
+        // ══════════════════════════════════════════
+        function Nav(pg, btn) { document.querySelectorAll('.bn').forEach(b => b.classList.remove('on')); btn.classList.add('on'); sfxC(); if (pg === 'sim') { closeOv(); return } closeOv(); var el = document.getElementById('ov-' + pg); if (el) { el.classList.add('on'); sfxO() } if (pg === 'quiz') Q.init() }
+        function closeOv() { document.querySelectorAll('.ov').forEach(o => o.classList.remove('on')) }
         var QD = [
-            { q: '1. ผนังหลอดเลือดแดง (Artery) มีลักษณะอย่างไร?', o: ['บางและมีวาล์วกั้น', 'หนาและยืดหยุ่นสูง เพื่อรับแรงดัน', 'มีรูพรุนขนาดใหญ่', 'บาง 1 ชั้น เหมือน Capillary'], c: 1, e: 'Artery รับแรงดันสูงจากหัวใจโดยตรง ต้องมีผนังหนา (Tunica Media) และยืดหยุ่นสูง' },
-            { q: '2. บริเวณใดมีความเร็วเลือดไหลช้าที่สุด?', o: ['Artery', 'Vein', 'Capillary', 'หัวใจ'], c: 2, e: 'Capillary มีพื้นที่หน้าตัดรวมมากที่สุด ความเร็วต่ำสุด ทำให้แลกเปลี่ยน O₂/CO₂ ได้สมบูรณ์' },
-            { q: '3. เลือดที่มี CO₂ สูงไหลกลับหัวใจผ่านทางใด?', o: ['ผ่าน Artery จากหัวสู่หาง', 'ผ่าน Vein จากหางสู่หัว', 'ซึมออกทางผิวหนัง', 'ผ่านเหงือกโดยตรง'], c: 1, e: 'Vein นำเลือด CO₂ สูงจากหางกลับสู่ Atrium แล้วไปฟอกที่เหงือก' },
-            { q: '4. ปลากัดต่างจากมนุษย์เรื่องระบบหมุนเวียนเลือดอย่างไร?', o: ['ปลามีหัวใจ 4 ห้อง', 'ปลาระบบเปิด มนุษย์ระบบปิด', 'ปลา Single Circulation มนุษย์ Double Circulation', 'ปลาไม่มี Capillary'], c: 2, e: 'ปลาใช้ Single Circulation หัวใจ 2 ห้อง มนุษย์ใช้ Double Circulation หัวใจ 4 ห้อง' },
-            { q: '5. ทำไม Capillary จึงมีผนังเพียง 1 ชั้นเซลล์?', o: ['เพื่อทนแรงดันสูง', 'เพื่อป้องกันเลือดรั่ว', 'เพื่อให้สารซึมผ่านได้ ลดระยะ Diffusion', 'เพื่อเพิ่มความเร็วเลือด'], c: 2, e: 'ผนัง 1 ชั้น Endothelium ทำให้ระยะ Diffusion สั้นที่สุด แลกเปลี่ยนรวดเร็ว' }
+            { q: '1. ผนัง Artery มีกี่ชั้น และทำหน้าที่อะไร?', o: ['1 ชั้น — แลกเปลี่ยนก๊าซ', '2 ชั้น — ส่งสัญญาณ', '3 ชั้น — รับแรงดันสูง', '4 ชั้น — ป้องกัน backflow'], c: 2, e: 'Artery มีผนัง 3 ชั้น: Intima, Media, Adventitia เพื่อรับแรงดันสูงจากหัวใจ' },
+            { q: '2. บริเวณใดมีความเร็วเลือดไหลช้าที่สุด?', o: ['Artery', 'Vein', 'Capillary', 'หัวใจ'], c: 2, e: 'Capillary พื้นที่รวมสูงสุด ความเร็วต่ำสุด แลกเปลี่ยน O₂/CO₂ ได้สมบูรณ์' },
+            { q: '3. Vein ต่างจาก Artery ข้อใดถูกต้อง?', o: ['Vein หนากว่า', 'Vein ไม่มี Valve', 'Vein มี Valve ป้องกัน backflow', 'Vein ไม่มี Endothelium'], c: 2, e: 'Vein มี Valve semi-lunar ป้องกันเลือดไหลย้อนกลับ' },
+            { q: '4. ปลากัดใช้ระบบหมุนเวียนเลือดแบบใด?', o: ['Double Circulation', 'Open Circulation', 'Single Circulation', 'Partial Circulation'], c: 2, e: 'Single Circulation: เลือดผ่านหัวใจ 1 รอบ/วงจร' },
+            { q: '5. Capillary มีผนัง 1 ชั้นเพราะอะไร?', o: ['ทนแรงดันสูง', 'ป้องกัน backflow', 'ให้สารซึมผ่าน ลด Diffusion distance', 'เพิ่มความเร็วเลือด'], c: 2, e: 'ผนัง 1 ชั้น Endothelium ลด Diffusion distance สั้นสุด แลกเปลี่ยนได้เร็ว' }
         ];
         var Q = {
             i: 0, s: 0, done: false,
-            init: function () { this.i = 0; this.s = 0; this.done = false; this.render() },
-            render: function () {
-                var el = document.getElementById('qi');
-                if (this.i >= QD.length) { this.result(el); return }
+            init() { this.i = 0; this.s = 0; this.done = false; this.render() },
+            render() {
+                var el = document.getElementById('qi'); if (this.i >= QD.length) { this.result(el); return }
                 var d = QD[this.i], pct = Math.round(this.i / QD.length * 100);
-                var opts = d.o.map(function (o, i) { return '<button class="qo" onclick="Q.check(' + i + ',this)">' + o + '</button>' }).join('');
-                el.innerHTML = '<div class="qc">QUESTION ' + (this.i + 1) + '/' + QD.length + ' <span style="float:right;color:var(--b)">' + pct + '%</span></div>'
-                    + '<div style="height:2px;background:rgba(0,212,255,.09);margin-bottom:12px"><div style="height:100%;width:' + pct + '%;background:var(--b);transition:width .4s"></div></div>'
-                    + '<div class="qq">' + d.q + '</div><div id="opts">' + opts + '</div>'
-                    + '<div class="qex" id="qex">&#x1F4A1; ' + d.e + '</div>';
-                this.done = false;
+                var opts = d.o.map((o, i) => '<button class="qo" onclick="Q.check(' + i + ',this)"><span>' + o + '</span></button>').join('');
+                el.innerHTML = '<div class="qm"><span>QUESTION ' + (this.i + 1) + '/' + QD.length + '</span><span style="color:var(--b)">' + pct + '%</span></div><div class="pb"><div class="pbf" style="width:' + pct + '%"></div></div><div class="qq">' + d.q + '</div><div id="opts">' + opts + '</div><div class="qex" id="qex">💡 ' + d.e + '</div>'
             },
-            check: function (i, btn) {
-                if (this.done) return; this.done = true;
-                var c = QD[this.i].c;
-                document.querySelectorAll('.qo').forEach(function (b) { b.disabled = true });
-                if (i === c) { btn.classList.add('ok'); this.s++; sfxCorrect(); document.getElementById('sOk').play() }
-                else { btn.classList.add('no'); document.querySelectorAll('.qo')[c].classList.add('ok'); sfxWrong(); document.getElementById('sBad').play() }
-                document.getElementById('qex').style.display = 'block';
-                var self = this; setTimeout(function () { self.i++; self.render() }, 2500);
+            check(i, btn) {
+                if (this.done) return; this.done = true; var c = QD[this.i].c;
+                document.querySelectorAll('.qo').forEach(b => b.disabled = true);
+                if (i === c) { btn.classList.add('ok'); this.s++; sfxOk(); document.getElementById('sOk').play() }
+                else { btn.classList.add('no'); document.querySelectorAll('.qo')[c].classList.add('ok'); sfxBad(); document.getElementById('sBad').play() }
+                document.getElementById('qex').style.display = 'block'; setTimeout(() => { this.i++; this.render() }, 2400)
             },
-            result: function (el) {
-                var p = Math.round(this.s / QD.length * 100);
-                var gc = p >= 80 ? 'var(--g)' : p >= 60 ? 'var(--b)' : 'var(--r)';
-                var gl = p >= 80 ? 'EXCELLENT' : p >= 60 ? 'GOOD' : 'NEEDS REVIEW';
-                var gm = p >= 80 ? 'ยอดเยี่ยมมากครับ/ค่ะ!' : p >= 60 ? 'ดีมาก! ทบทวนข้อที่ผิดได้เลย' : 'กลับไปดู BIO DATA ก่อนนะครับ/ค่ะ';
-                el.innerHTML = '<div style="text-align:center;padding:24px 0">'
-                    + '<div class="sbig">' + this.s + '/' + QD.length + '</div>'
-                    + '<div class="slbl">TOTAL SCORE · ' + p + '%</div>'
-                    + '<div style="font-family:var(--hud);font-size:.92rem;font-weight:700;color:' + gc + ';margin-top:11px">' + gl + '</div>'
-                    + '<div style="font-family:var(--mono);font-size:.58rem;color:rgba(0,212,255,.42);margin-top:6px">' + gm + '</div>'
-                    + '<div style="margin-top:18px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">'
-                    + '<button class="bnn" onclick="Q.init()">&#x21BA; RETRY</button>'
-                    + '<button class="bnn" onclick="closeOv()">&#x2715; CLOSE</button></div></div>';
+            result(el) {
+                var p = Math.round(this.s / QD.length * 100), gc = p >= 80 ? 'var(--g)' : p >= 60 ? 'var(--b)' : 'var(--r)', gl = p >= 80 ? 'EXCELLENT' : p >= 60 ? 'GOOD' : 'NEEDS REVIEW';
+                el.innerHTML = '<div style="text-align:center;padding:26px 0"><div class="sbig">' + this.s + '/' + QD.length + '</div><div class="slbl">TOTAL SCORE · ' + p + '%</div><div style="font-family:var(--hud);font-size:.87rem;font-weight:700;color:' + gc + ';margin-top:12px">' + gl + '</div><div style="margin-top:17px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><button class="bnn" onclick="Q.init()">↺ RETRY</button><button class="bnn" onclick="closeOv()">✕ CLOSE</button></div></div>'
             }
         };
-
-        // ══ AUDIO ══
         var aOn = true;
-        function toggleAudio() {
-            sfxClick();
-            var va = document.getElementById('va'), ab = document.getElementById('abtn');
-            if (aOn) { va.pause(); if (ab) ab.innerHTML = '&#x1F507; MUTED' }
-            else { va.play().catch(function () { }); if (ab) ab.innerHTML = '&#x1F50A; AUDIO' }
-            aOn = !aOn;
-        }
+        function toggleAudio() { sfxC(); var va = document.getElementById('va'), ab = document.getElementById('abtn'); if (aOn) { va.pause(); if (ab) ab.innerHTML = '<span>🔇 MUTED</span>' } else { va.play().catch(() => { }); if (ab) ab.innerHTML = '<span>🔊 AUDIO</span>' } aOn = !aOn }
     </script>
 </body>
 
