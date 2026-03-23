@@ -48,7 +48,13 @@
             -webkit-tap-highlight-color: transparent
         }
 
-        /* layered canvases */
+        /* ── CANVAS z-layers ──
+           c-main z:2  ← fish + particles
+           scanlines z:3
+           vignette z:4
+           HUD z:10
+           overlays z:5000   ← must be above everything except intro
+        */
         #c-main {
             position: fixed;
             inset: 0;
@@ -59,7 +65,7 @@
         .scanlines {
             position: fixed;
             inset: 0;
-            z-index: 5;
+            z-index: 3;
             pointer-events: none;
             background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, .055) 3px, rgba(0, 0, 0, .055) 4px)
         }
@@ -67,12 +73,12 @@
         .vignette {
             position: fixed;
             inset: 0;
-            z-index: 6;
+            z-index: 4;
             pointer-events: none;
             background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 26%, rgba(1, 3, 11, .94) 100%)
         }
 
-        /* ════ INTRO ════ */
+        /* INTRO */
         #intro {
             position: fixed;
             inset: 0;
@@ -395,7 +401,7 @@
             }
         }
 
-        /* ════ HUD ════ */
+        /* HUD */
         #hud {
             position: fixed;
             inset: 0;
@@ -925,9 +931,10 @@
             color: var(--g)
         }
 
+        /* BEAT BARS */
         #beat {
             position: fixed;
-            bottom: calc(var(--nh)+2px);
+            bottom: calc(var(--nh) + 2px);
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -951,6 +958,7 @@
             transition: height .07s
         }
 
+        /* NAV */
         .bnav {
             flex: 0 0 var(--nh);
             height: var(--nh);
@@ -1168,7 +1176,7 @@
             border-bottom: 1px solid var(--bd)
         }
 
-        /* MICRO-ZOOM */
+        /* MICRO-ZOOM MODAL */
         #mzmod {
             position: fixed;
             inset: 0;
@@ -1424,7 +1432,7 @@
             color: var(--g)
         }
 
-        /* OVERLAYS */
+        /* OVERLAYS — sits above canvas (z:5000) and HUD (z:10), below intro (z:9000) */
         .ov {
             position: fixed;
             inset: 0;
@@ -1432,8 +1440,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(1, 3, 11, .92);
-            backdrop-filter: blur(26px);
+            background: rgba(1, 3, 11, .88);
+            backdrop-filter: blur(24px) saturate(1.4);
+            -webkit-backdrop-filter: blur(24px) saturate(1.4);
             opacity: 0;
             visibility: hidden;
             transition: all .35s
@@ -1456,7 +1465,7 @@
             scrollbar-width: thin;
             scrollbar-color: rgba(0, 229, 255, .15) transparent;
             -webkit-overflow-scrolling: touch;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, .75)
+            box-shadow: 0 40px 100px rgba(0, 0, 0, .85)
         }
 
         .mbox::-webkit-scrollbar {
@@ -1852,6 +1861,7 @@
             background: var(--b2)
         }
 
+        /* Responsive */
         @media(max-width:900px) {
             :root {
                 --pw: 162px;
@@ -1936,7 +1946,6 @@
     <audio id="sOk" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
     <audio id="sBad" src="https://assets.mixkit.co/active_storage/sfx/2959/2959-preview.mp3"></audio>
 
-    <!-- SINGLE main canvas -->
     <canvas id="c-main"></canvas>
     <div class="scanlines"></div>
     <div class="vignette"></div>
@@ -2135,7 +2144,7 @@
         </div>
     </div>
 
-    <!-- MICRO-ZOOM MODAL -->
+    <!-- MICRO-ZOOM -->
     <div id="mzmod">
         <div class="mzbox">
             <div class="mzhdr"><span>🔬 CELLULAR DETAIL — MICRO-ZOOM ×2000</span><span class="mzclose"
@@ -2220,8 +2229,7 @@
 
     <!-- OVERLAYS -->
     <div class="ov" id="ov-bio">
-        <div class="mbox">
-            <button class="btnc" onclick="closeOv()">✕</button>
+        <div class="mbox"><button class="btnc" onclick="closeOv()">✕</button>
             <div class="ov-t">CIRCULATORY SYSTEM — BIOLOGY DATA</div>
             <div class="ov-s">BETTA SPLENDENS · FISH CARDIOVASCULAR</div>
             <div class="sec sg">
@@ -2290,8 +2298,7 @@
                 <div class="st" style="color:var(--am)"><span>❤️</span>Single Circulation</div>
                 <div class="sc">หัวใจ → <span class="wn">Artery</span> → เหงือก → <span class="hl">Dorsal Aorta</span> →
                     <span style="color:var(--g)">Capillary</span> → Vein → วนซ้ำ<br><strong>Single Circulation</strong>
-                    vs มนุษย์ Double Circulation
-                </div>
+                    vs มนุษย์ Double Circulation</div>
             </div>
             <div style="text-align:center;margin-top:12px"><button class="bnn" onclick="closeOv()">✕ CLOSE</button>
             </div>
@@ -2369,23 +2376,27 @@
                         class="chip cr2">Biology</span><span class="chip cb2">M.5</span><span
                         class="chip cg2">Interactive</span><span class="chip cp2">3D Sim</span></div>
             </div>
-            <div style="text-align:center;margin-top:9px;display:flex;gap:6px;justify-content:center">
-                <button class="bnn" onclick="closeOv()">✕ CLOSE</button><button class="bnn"
-                    onclick="location.reload()">↺ RESCAN</button>
-            </div>
+            <div style="text-align:center;margin-top:9px;display:flex;gap:6px;justify-content:center"><button
+                    class="bnn" onclick="closeOv()">✕ CLOSE</button><button class="bnn" onclick="location.reload()">↺
+                    RESCAN</button></div>
         </div>
     </div>
 
     <script>
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         // GLOBAL STATE
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         var G = { speed: 1, paused: false, turbo: false, density: .5, viscosity: .25, soundLevel: 0, beatOn: false, micOn: false, autoBeatT: 0 };
         var simStarted = false;
 
-        // ══════════════════════════════════════════
+        // ── SHARED heartbeat — single source of truth ──
+        // Updated every render frame; read everywhere
+        var PULSE = 0;     // 0‒1 smooth
+        var SIM_T = 0;     // elapsed time in seconds
+
+        // ═══════════════════════════════════════════════════════
         // AUDIO SFX
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         var AC;
         function getAC() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); return AC }
         function beep(f, d, t, v) { try { var a = getAC(), o = a.createOscillator(), g = a.createGain(); o.connect(g); g.connect(a.destination); o.type = t || 'sine'; o.frequency.setValueAtTime(f, a.currentTime); g.gain.setValueAtTime(v || .1, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + d); o.start(); o.stop(a.currentTime + d) } catch (e) { } }
@@ -2395,22 +2406,22 @@
         function sfxBad() { beep(180, .28, 'sawtooth', .1) }
         function sfxScan() { beep(1200, .04, 'square', .05); setTimeout(() => beep(900, .04, 'square', .04), 50) }
 
-        // ══════════════════════════════════════════
-        // DNA INTRO CANVAS
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
+        // DNA INTRO
+        // ═══════════════════════════════════════════════════════
         (function () {
             var c = document.getElementById('c-dna'), x = c.getContext('2d');
             function rs() { c.width = innerWidth; c.height = innerHeight } rs(); window.addEventListener('resize', rs);
             var t = 0;
             (function f() {
-                requestAnimationFrame(f);
-                x.clearRect(0, 0, c.width, c.height);
+                requestAnimationFrame(f); x.clearRect(0, 0, c.width, c.height);
                 var W = c.width, H = c.height, cx = W / 2, pts = 55, r = 78, ys = H * .82, yo = (H - ys) / 2;
                 x.fillStyle = 'rgba(1,3,11,.22)'; x.fillRect(0, 0, W, H);
                 for (var s = 0; s < 2; s++) {
                     for (var i = 0; i < pts; i++) {
-                        var p = i / pts, y = yo + p * ys, a = p * Math.PI * 5.8 + t + s * Math.PI, d = (Math.sin(a) + 1) / 2, al = .06 + d * .52, sz = 1.3 + d * 2.2;
-                        var col = s === 0 ? 'rgba(255,' + (44 + Math.round(d * 24)) + ',' + (78 + Math.round(d * 14)) + ',' + al + ')' : 'rgba(' + (14 + Math.round(d * 8)) + ',' + (198 + Math.round(d * 57)) + ',255,' + al * .7 + ')';
+                        var p = i / pts, y = yo + p * ys, a = p * Math.PI * 5.8 + t + s * Math.PI, d = (Math.sin(a) + 1) / 2;
+                        var al = .06 + d * .52, sz = 1.3 + d * 2.2;
+                        var col = s === 0 ? 'rgba(255,' + (44 + Math.round(d * 24)) + ',' + (78 + Math.round(d * 14)) + ',' + al + ')' : 'rgba(' + (14 + Math.round(d * 8)) + ',' + (198 + Math.round(d * 57)) + ',255,' + (al * .7) + ')';
                         x.shadowBlur = d > .6 ? 8 : 0; x.shadowColor = col;
                         x.fillStyle = col; x.beginPath(); x.arc(cx + Math.cos(a) * r, y, sz, 0, Math.PI * 2); x.fill();
                     }
@@ -2425,19 +2436,27 @@
             })();
         })();
 
-        // ══════════════════════════════════════════
-        // MAIN CANVAS — Fish + Particles (Canvas2D)
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
+        // MAIN CANVAS — Fish + Particles
+        // ═══════════════════════════════════════════════════════
         (function () {
             var C = document.getElementById('c-main'), ctx = C.getContext('2d');
-            var W, H, aY, vY, zoom = 0.15, tubeOff = 0, meshT = 0, fishAngle = 0, heartPulse = 0;
+            var W, H, zoom = 0.15, tubeOff = 0, meshT = 0, visib = 0;
             var caps = [];
+
+            // ── aY / vY are LOGICAL coordinates (no zoom applied) ──
+            // They stay fixed relative to the screen; zoom only scales
+            // the particle/tube rendering *around the canvas centre*,
+            // which is why vessels appear to "zoom in" as zoom grows.
+            var aY, vY;
 
             function rs() {
                 var dpr = Math.min(devicePixelRatio || 1, 2);
                 W = innerWidth; H = innerHeight;
                 C.width = W * dpr; C.height = H * dpr; C.style.width = W + 'px'; C.style.height = H + 'px';
                 ctx.scale(dpr, dpr);
+
+                // ── FIX: recalc aY/vY as fixed screen fractions ──
                 aY = H * .36; vY = H * .64;
                 window._aY = aY; window._vY = vY;
                 buildCaps();
@@ -2452,107 +2471,97 @@
                 }
             }
 
-            // ─── FISH (Canvas2D) ───
-            function drawFish(cx, cy, w, h, t, pulse, visib) {
+            // ─── FISH ───
+            function drawFish(cx, cy, w, h, pulse, visib) {
                 if (visib < .01) return;
                 ctx.save();
-                // body
                 var bodyGrd = ctx.createRadialGradient(cx - w * .1, cy, h * .05, cx, cy, w * .6);
-                bodyGrd.addColorStop(0, 'rgba(60,120,220,' + (.55 * visib) + ')');
-                bodyGrd.addColorStop(.4, 'rgba(35,80,185,' + (.5 * visib) + ')');
-                bodyGrd.addColorStop(.8, 'rgba(80,30,140,' + (.45 * visib) + ')');
+                bodyGrd.addColorStop(0, 'rgba(60,120,220,' + (0.55 * visib) + ')');
+                bodyGrd.addColorStop(.4, 'rgba(35,80,185,' + (0.5 * visib) + ')');
+                bodyGrd.addColorStop(.8, 'rgba(80,30,140,' + (0.45 * visib) + ')');
                 bodyGrd.addColorStop(1, 'rgba(15,30,80,0)');
-                ctx.shadowBlur = 30 * visib; ctx.shadowColor = 'rgba(0,150,255,' + (.3 * visib) + ')';
+                ctx.shadowBlur = 30 * visib; ctx.shadowColor = 'rgba(0,150,255,' + (0.3 * visib) + ')';
                 ctx.fillStyle = bodyGrd;
                 ctx.beginPath();
-                // fish body outline using bezier
-                var bx = cx, by = cy;
-                ctx.moveTo(bx + w * .48, by);
-                ctx.bezierCurveTo(bx + w * .45, by - h * .22, bx + w * .15, by - h * .45, bx - w * .05, by - h * .38);
-                ctx.bezierCurveTo(bx - w * .25, by - h * .3, bx - w * .48, by - h * .12, bx - w * .5, by);
-                ctx.bezierCurveTo(bx - w * .48, by + h * .12, bx - w * .25, by + h * .3, bx - w * .05, by + h * .38);
-                ctx.bezierCurveTo(bx + w * .15, by + h * .45, bx + w * .45, by + h * .22, bx + w * .48, by);
+                ctx.moveTo(cx + w * .48, cy);
+                ctx.bezierCurveTo(cx + w * .45, cy - h * .22, cx + w * .15, cy - h * .45, cx - w * .05, cy - h * .38);
+                ctx.bezierCurveTo(cx - w * .25, cy - h * .3, cx - w * .48, cy - h * .12, cx - w * .5, cy);
+                ctx.bezierCurveTo(cx - w * .48, cy + h * .12, cx - w * .25, cy + h * .3, cx - w * .05, cy + h * .38);
+                ctx.bezierCurveTo(cx + w * .15, cy + h * .45, cx + w * .45, cy + h * .22, cx + w * .48, cy);
                 ctx.closePath(); ctx.fill();
                 ctx.shadowBlur = 0;
 
-                // tail fin
-                var tw = t * 2.5, tailWave = Math.sin(t * 2.8) * 0.08 * h;
-                ctx.beginPath();
-                ctx.moveTo(bx - w * .5, by);
-                ctx.bezierCurveTo(bx - w * .7, by - h * .5 + tailWave, bx - w * .9, by - h * .7 + tailWave, bx - w * .85, by - h * .55 + tailWave);
-                ctx.bezierCurveTo(bx - w * .75, by - h * .35, bx - w * .58, by - h * .15, bx - w * .5, by);
-                ctx.fillStyle = 'rgba(80,40,160,' + (.35 * visib) + ')'; ctx.fill();
-                ctx.beginPath();
-                ctx.moveTo(bx - w * .5, by);
-                ctx.bezierCurveTo(bx - w * .7, by + h * .5 - tailWave, bx - w * .9, by + h * .7 - tailWave, bx - w * .85, by + h * .55 - tailWave);
-                ctx.bezierCurveTo(bx - w * .75, by + h * .35, bx - w * .58, by + h * .15, bx - w * .5, by);
-                ctx.fillStyle = 'rgba(70,30,150,' + (.3 * visib) + ')'; ctx.fill();
+                // tail
+                var tailWave = Math.sin(SIM_T * 2.8) * 0.08 * h;
+                ctx.fillStyle = 'rgba(80,40,160,' + (0.35 * visib) + ')';
+                ctx.beginPath(); ctx.moveTo(cx - w * .5, cy);
+                ctx.bezierCurveTo(cx - w * .7, cy - h * .5 + tailWave, cx - w * .9, cy - h * .7 + tailWave, cx - w * .85, cy - h * .55 + tailWave);
+                ctx.bezierCurveTo(cx - w * .75, cy - h * .35, cx - w * .58, cy - h * .15, cx - w * .5, cy);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(70,30,150,' + (0.3 * visib) + ')';
+                ctx.beginPath(); ctx.moveTo(cx - w * .5, cy);
+                ctx.bezierCurveTo(cx - w * .7, cy + h * .5 - tailWave, cx - w * .9, cy + h * .7 - tailWave, cx - w * .85, cy + h * .55 - tailWave);
+                ctx.bezierCurveTo(cx - w * .75, cy + h * .35, cx - w * .58, cy + h * .15, cx - w * .5, cy);
+                ctx.fill();
 
                 // dorsal fin
-                ctx.beginPath(); ctx.moveTo(bx + w * .1, by - h * .38); ctx.bezierCurveTo(bx + w * .05, by - h * .7, bx - w * .2, by - h * .72, bx - w * .3, by - h * .42); ctx.bezierCurveTo(bx - w * .15, by - h * .38, bx, by - h * .36, bx + w * .1, by - h * .38);
-                ctx.fillStyle = 'rgba(60,20,130,' + (.25 * visib) + ')'; ctx.fill();
+                ctx.fillStyle = 'rgba(60,20,130,' + (0.25 * visib) + ')';
+                ctx.beginPath(); ctx.moveTo(cx + w * .1, cy - h * .38); ctx.bezierCurveTo(cx + w * .05, cy - h * .7, cx - w * .2, cy - h * .72, cx - w * .3, cy - h * .42); ctx.bezierCurveTo(cx - w * .15, cy - h * .38, cx, cy - h * .36, cx + w * .1, cy - h * .38); ctx.fill();
 
-                // iridescent scale overlay
+                // iridescent scales
                 for (var i = 0; i < 6; i++) {
-                    var sx = bx + w * (.3 - i * .1), sy = by + Math.sin(t * .5 + i) * (h * .04);
+                    var sx = cx + w * (.3 - i * .1), sy = cy + Math.sin(SIM_T * .5 + i) * (h * .04);
                     var irid = ctx.createRadialGradient(sx, sy, 0, sx, sy, w * .12);
-                    irid.addColorStop(0, 'rgba(' + (50 + i * 18) + ',' + (100 + i * 12) + ',' + (200 - i * 15) + ',' + (.08 * visib) + ')');
+                    irid.addColorStop(0, 'rgba(' + (50 + i * 18) + ',' + (100 + i * 12) + ',' + (200 - i * 15) + ',' + (0.08 * visib) + ')');
                     irid.addColorStop(1, 'rgba(0,0,0,0)');
                     ctx.fillStyle = irid; ctx.beginPath(); ctx.ellipse(sx, sy, w * .12, h * .22, 0, 0, Math.PI * 2); ctx.fill();
                 }
 
-                // ─── VESSEL NETWORK ───
+                // vessels on fish
                 ctx.lineWidth = 2.5 * visib;
-                // Dorsal aorta (spine)
-                var daFlow = (Math.sin(t * 3 * G.speed + pulse * 2) * .5 + .5) * visib;
-                ctx.strokeStyle = 'rgba(255,45,85,' + (.45 + daFlow * .4) + ')';
+                var daFlow = (Math.sin(SIM_T * 3 * G.speed + pulse * 2) * .5 + .5) * visib;
+                ctx.strokeStyle = 'rgba(255,45,85,' + (0.45 + daFlow * .4) + ')';
                 ctx.shadowBlur = 8 * visib; ctx.shadowColor = 'rgba(255,45,85,.5)';
-                ctx.beginPath(); ctx.moveTo(bx + w * .42, by - h * .02); ctx.bezierCurveTo(bx, by - h * .04, bx - w * .2, by - h * .02, bx - w * .46, by - h * .01); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(cx + w * .42, cy - h * .02); ctx.bezierCurveTo(cx, cy - h * .04, cx - w * .2, cy - h * .02, cx - w * .46, cy - h * .01); ctx.stroke();
 
-                // Ventral vessel
-                ctx.strokeStyle = 'rgba(0,180,255,' + (.3 + daFlow * .3) + ')'; ctx.shadowColor = 'rgba(0,180,255,.4)';
-                ctx.beginPath(); ctx.moveTo(bx + w * .38, by + h * .12); ctx.bezierCurveTo(bx, by + h * .14, bx - w * .2, by + h * .12, bx - w * .44, by + h * .1); ctx.stroke();
+                ctx.strokeStyle = 'rgba(0,180,255,' + (0.3 + daFlow * .3) + ')'; ctx.shadowColor = 'rgba(0,180,255,.4)';
+                ctx.beginPath(); ctx.moveTo(cx + w * .38, cy + h * .12); ctx.bezierCurveTo(cx, cy + h * .14, cx - w * .2, cy + h * .12, cx - w * .44, cy + h * .1); ctx.stroke();
 
-                // Gill network (branching near head)
                 for (var i = 0; i < 5; i++) {
-                    var gx = bx + w * (.38 - .03 * i), gy = by - h * (.06 + i * .04);
+                    var gx = cx + w * (.38 - .03 * i), gy = cy - h * (.06 + i * .04);
                     var gl2 = ctx.createLinearGradient(gx, gy, gx - w * .04, gy + h * .06);
-                    var gillPulse = (Math.sin(t * 5 + pulse * 3 + i) * .5 + .5) * visib;
-                    gl2.addColorStop(0, 'rgba(255,' + (80 + i * 15) + ',50,' + (.3 + gillPulse * .3) + ')');
+                    var gp = (Math.sin(SIM_T * 5 + pulse * 3 + i) * .5 + .5) * visib;
+                    gl2.addColorStop(0, 'rgba(255,' + (80 + i * 15) + ',50,' + (0.3 + gp * .3) + ')');
                     gl2.addColorStop(1, 'rgba(255,100,60,0)');
                     ctx.strokeStyle = gl2; ctx.lineWidth = 1.2 * visib;
                     ctx.beginPath(); ctx.moveTo(gx, gy); ctx.quadraticCurveTo(gx - w * .02, gy + h * .04, gx - w * .04, gy + h * .08); ctx.stroke();
                 }
-
-                // Capillary lattice (fine)
                 ctx.shadowBlur = 0; ctx.globalAlpha = .08 * visib;
                 for (var i = 0; i < 8; i++) {
-                    var lx = bx + w * (.3 - i * .1), ly = by;
                     ctx.strokeStyle = 'rgba(0,255,100,.6)'; ctx.lineWidth = .7 * visib;
-                    ctx.beginPath(); ctx.moveTo(lx, ly - h * .25); ctx.lineTo(lx + (Math.random() - .5) * w * .04, ly + h * .25); ctx.stroke();
+                    var lx = cx + w * (.3 - i * .1);
+                    ctx.beginPath(); ctx.moveTo(lx, cy - h * .25); ctx.lineTo(lx + (Math.random() - .5) * w * .04, cy + h * .25); ctx.stroke();
                 }
                 ctx.globalAlpha = 1;
 
-                // Heart glow
-                heartPulse = Math.pow(Math.sin(t * 1.18 * G.speed), 8);
-                var hx = bx + w * .22, hy = by - h * .04;
+                // Heart glow — pulses with PULSE
+                var hx = cx + w * .22, hy = cy - h * .04;
                 var hGrd = ctx.createRadialGradient(hx, hy, 0, hx, hy, w * .12);
-                hGrd.addColorStop(0, 'rgba(255,45,85,' + (.5 + heartPulse * .45) * visib + ')');
-                hGrd.addColorStop(.5, 'rgba(255,45,85,' + (.15 * visib) + ')');
+                hGrd.addColorStop(0, 'rgba(255,45,85,' + ((.5 + pulse * .45) * visib) + ')');
+                hGrd.addColorStop(.5, 'rgba(255,45,85,' + (0.15 * visib) + ')');
                 hGrd.addColorStop(1, 'rgba(255,45,85,0)');
                 ctx.fillStyle = hGrd; ctx.beginPath(); ctx.arc(hx, hy, w * .12, 0, Math.PI * 2); ctx.fill();
 
-                // Eye
+                // eye
                 ctx.shadowBlur = 6 * visib; ctx.shadowColor = 'rgba(0,255,200,.6)';
-                ctx.fillStyle = 'rgba(2,6,18,' + (.95 * visib) + ')'; ctx.beginPath(); ctx.ellipse(bx + w * .42, by - h * .1, w * .045, h * .09, 0, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = 'rgba(0,230,200,' + (.7 * visib) + ')'; ctx.beginPath(); ctx.ellipse(bx + w * .43, by - h * .1, w * .022, h * .045, 0, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = 'rgba(255,255,255,' + (.9 * visib) + ')'; ctx.beginPath(); ctx.arc(bx + w * .43, by - h * .115, w * .008, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(2,6,18,' + (0.95 * visib) + ')'; ctx.beginPath(); ctx.ellipse(cx + w * .42, cy - h * .1, w * .045, h * .09, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(0,230,200,' + (0.7 * visib) + ')'; ctx.beginPath(); ctx.ellipse(cx + w * .43, cy - h * .1, w * .022, h * .045, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(255,255,255,' + (0.9 * visib) + ')'; ctx.beginPath(); ctx.arc(cx + w * .43, cy - h * .115, w * .008, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
-
                 ctx.restore();
             }
 
-            // ─── PARTICLES ───
+            // ─── RBC ───
             function RBC() { this.reset(true) }
             RBC.prototype.reset = function (r) {
                 this.mode = 'a'; this.t = r ? Math.random() : 0; this.oy = (Math.random() - .5) * 12; this.oz = (Math.random() - .5) * .5;
@@ -2561,14 +2570,14 @@
             };
             RBC.prototype.update = function () {
                 if (G.paused || !caps.length) return;
-                var spd = (.0033 + heartPulse * .008) * G.speed * (1 - G.viscosity * .45);
+                // ── FIX: uses shared PULSE ──
+                var spd = (.0033 + PULSE * .008) * G.speed * (1 - G.viscosity * .45);
                 if (this.mode === 'a') {
                     this.t += spd * this.sp; if (this.t > 1) this.t = 0;
                     this.px = -W * .1 + this.t * (W * 1.2); this.py = aY + this.oy;
                     if (caps[this.ci] && this.px > caps[this.ci].x1 - 10 && Math.random() > .984) this.mode = 'c';
                 } else if (this.mode === 'c') {
-                    this.ct += .005 * this.sp * G.speed;
-                    if (this.ct >= 1) { this.mode = 'v'; this.t = 1; return }
+                    this.ct += .005 * this.sp * G.speed; if (this.ct >= 1) { this.mode = 'v'; this.t = 1; return }
                     var c = caps[this.ci], tt = this.ct;
                     this.px = Math.pow(1 - tt, 3) * c.x1 + 3 * Math.pow(1 - tt, 2) * tt * c.cx1 + 3 * (1 - tt) * tt * tt * c.cx2 + tt * tt * tt * c.x2;
                     this.py = Math.pow(1 - tt, 3) * c.y1 + 3 * Math.pow(1 - tt, 2) * tt * c.cy1 + 3 * (1 - tt) * tt * tt * c.cy2 + tt * tt * tt * c.y2;
@@ -2581,7 +2590,7 @@
             };
             RBC.prototype.draw = function () {
                 if (typeof this.px === 'undefined') return;
-                var s = this.sz * (1 + heartPulse * .1) * (0.78 + this.oz * .22) * zoom;
+                var s = this.sz * (1 + PULSE * .1) * (0.78 + this.oz * .22) * zoom;
                 var r2, g2, b2;
                 if (this.mode === 'a') { r2 = 255; g2 = 44; b2 = 78 }
                 else if (this.mode === 'v') { r2 = 16; g2 = 142; b2 = 255 }
@@ -2610,7 +2619,7 @@
             WBC.prototype.reset = function (r) { this.t = r ? Math.random() : 0; this.oy = (Math.random() - .5) * 8; this.sp = .07 + Math.random() * .16; this.sz = 5 + Math.random() * 2.8; this.wb = Math.random() * Math.PI * 2 };
             WBC.prototype.update = function () {
                 if (G.paused) return;
-                this.t += (.0014 + heartPulse * .0028) * this.sp * G.speed; if (this.t > 1) this.t = 0;
+                this.t += (.0014 + PULSE * .0028) * this.sp * G.speed; if (this.t > 1) this.t = 0;
                 this.px = -W * .1 + this.t * (W * 1.2); this.py = aY + this.oy; this.wb += .036;
             };
             WBC.prototype.draw = function () {
@@ -2619,8 +2628,7 @@
                 ctx.fillStyle = 'rgba(165,192,255,.09)'; ctx.beginPath();
                 for (var a = 0; a < Math.PI * 2; a += .33) {
                     var rx = s * (0.8 + 0.28 * Math.sin(a * 3 + this.wb)), ry = rx * .63;
-                    var x = this.px + Math.cos(a) * rx, y = this.py + Math.sin(a) * ry;
-                    a < .01 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    a < .01 ? ctx.moveTo(this.px + Math.cos(a) * rx, this.py + Math.sin(a) * ry) : ctx.lineTo(this.px + Math.cos(a) * rx, this.py + Math.sin(a) * ry)
                 }
                 ctx.closePath(); ctx.fill();
                 ctx.fillStyle = 'rgba(115,150,255,.17)'; ctx.beginPath(); ctx.ellipse(this.px - s * .1, this.py, Math.max(.2, s * .36), Math.max(.1, s * .26), -.26, 0, Math.PI * 2); ctx.fill();
@@ -2630,8 +2638,7 @@
             function Plasma() { this.reset(true) }
             Plasma.prototype.reset = function (r) { this.isA = Math.random() > .5; this.t = r ? Math.random() : 0; this.oy = (Math.random() - .5) * 15; this.sp = 1.1 + Math.random() * 2; this.sz = .65 + Math.random() * 1.1; this.al = .06 + Math.random() * .15 };
             Plasma.prototype.update = function () {
-                if (G.paused) return;
-                var s = .005 + heartPulse * .011;
+                if (G.paused) return; var s = .005 + PULSE * .011;
                 if (this.isA) { this.t += s * this.sp * G.speed; if (this.t > 1) this.t = 0 }
                 else { this.t -= s * this.sp * .63 * G.speed; if (this.t < 0) this.t = 1 }
                 this.px = -W * .1 + this.t * (W * 1.2); this.py = (this.isA ? aY : vY) + this.oy;
@@ -2653,20 +2660,17 @@
                 while (rbcs.length > target && rbcs.length > 1) rbcs.pop();
             };
 
-            function drawBg(t) {
-                // deep background with vessel glow
+            function drawBg() {
                 var bg = ctx.createRadialGradient(W / 2, H * .46, 0, W / 2, H * .5, Math.max(W, H) * .82);
                 bg.addColorStop(0, 'rgba(6,10,26,1)'); bg.addColorStop(.55, 'rgba(3,6,16,1)'); bg.addColorStop(1, 'rgba(1,2,8,1)');
                 ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-                // grid
                 ctx.strokeStyle = 'rgba(0,229,255,.013)'; ctx.lineWidth = 1;
                 for (var x = 0; x < W; x += 64) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke() }
                 for (var y = 0; y < H; y += 64) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke() }
-                // artery background glow
-                var pulse = heartPulse;
-                ctx.strokeStyle = 'rgba(255,45,85,' + (pulse * .12) + ')'; ctx.lineWidth = (24 + pulse * 55) * zoom;
+                // background vessel glow — uses PULSE
+                ctx.strokeStyle = 'rgba(255,45,85,' + (PULSE * .12) + ')'; ctx.lineWidth = (24 + PULSE * 55) * zoom;
                 ctx.beginPath(); ctx.moveTo(-W * .15, aY); ctx.lineTo(W * 1.15, aY); ctx.stroke();
-                ctx.strokeStyle = 'rgba(0,229,255,' + (pulse * .08) + ')'; ctx.lineWidth = (22 + pulse * 35) * zoom;
+                ctx.strokeStyle = 'rgba(0,229,255,' + (PULSE * .08) + ')'; ctx.lineWidth = (22 + PULSE * 35) * zoom;
                 ctx.beginPath(); ctx.moveTo(-W * .15, vY); ctx.lineTo(W * 1.15, vY); ctx.stroke();
             }
 
@@ -2678,10 +2682,8 @@
                 g.addColorStop(0, c1); g.addColorStop(.38, c2); g.addColorStop(.62, c2); g.addColorStop(1, c1);
                 ctx.strokeStyle = g; ctx.lineWidth = (18 + ex) * zoom; ctx.shadowBlur = 22 * zoom; ctx.shadowColor = glow;
                 ctx.beginPath(); ctx.moveTo(-W * .14, y); ctx.lineTo(W * 1.14, y); ctx.stroke(); ctx.shadowBlur = 0;
-                // specular
                 ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 3 * zoom;
                 ctx.beginPath(); ctx.moveTo(-W * .14, y - 7 * zoom); ctx.lineTo(W * 1.14, y - 7 * zoom); ctx.stroke();
-                // parallax wall
                 ctx.globalAlpha = .05; ctx.strokeStyle = c2; ctx.lineWidth = .65 * zoom;
                 for (var x = -W * .1; x < W * 1.1; x += 25 * zoom) {
                     ctx.beginPath(); ctx.moveTo((x + tubeOff * zoom) % (25 * zoom + 1), y - (14 + ex) * .52 * zoom);
@@ -2693,9 +2695,8 @@
             function drawCaps() {
                 meshT += .007;
                 caps.forEach(function (c, idx) {
-                    var steps = 14;
-                    for (var i = 0; i < steps; i++) {
-                        var t0 = i / steps, t1 = (i + 1) / steps, mx = (Math.sin(meshT + idx * .42 + t0 * 3.2) + 1) / 2, al = .03 + mx * .08;
+                    for (var i = 0; i < 14; i++) {
+                        var t0 = i / 14, t1 = (i + 1) / 14, mx = (Math.sin(meshT + idx * .42 + t0 * 3.2) + 1) / 2, al = .03 + mx * .08;
                         var r2 = Math.floor(255 * (1 - t0)), b2 = Math.floor(78 + t0 * 177);
                         ctx.strokeStyle = 'rgba(' + r2 + ',48,' + b2 + ',' + al + ')'; ctx.lineWidth = 1.5 * zoom;
                         function bz(tt) { return { x: Math.pow(1 - tt, 3) * c.x1 + 3 * Math.pow(1 - tt, 2) * tt * c.cx1 + 3 * (1 - tt) * tt * tt * c.cx2 + tt * tt * tt * c.x2, y: Math.pow(1 - tt, 3) * c.y1 + 3 * Math.pow(1 - tt, 2) * tt * c.cy1 + 3 * (1 - tt) * tt * tt * c.cy2 + tt * tt * tt * c.y2 } }
@@ -2707,15 +2708,14 @@
             function drawLabels(nh) {
                 var cY = H - nh - 12, fs = Math.max(8.5, Math.min(11, W * .0095));
                 ctx.save(); ctx.textBaseline = 'middle';
-                function labelBox(y, label, sub, col) {
+                function lbox(y, label, sub, col) {
                     ctx.fillStyle = 'rgba(0,0,0,.58)'; ctx.fillRect(0, y + 21, 130 + fs * 3.2, fs * 2 + 11);
                     ctx.fillStyle = col; ctx.fillRect(0, y + 21, 2, fs * 2 + 11);
                     ctx.font = '800 ' + (fs + .5) + 'px Syne,sans-serif'; ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.fillText(label, 13, y + 21 + fs / 2 + 3);
                     ctx.font = '400 ' + (fs - 2) + 'px Space Grotesk,sans-serif'; ctx.fillStyle = 'rgba(255,255,255,.48)'; ctx.fillText(sub, 13, y + 21 + fs + 5);
                 }
-                labelBox(aY, '▶ ARTERY — O₂', 'HIGH PRESSURE | O₂ RICH', 'rgba(255,58,88,.9)');
-                labelBox(vY, '◀ VEIN — CO₂', 'LOW PRESSURE | CO₂ RICH | VALVE', 'rgba(16,220,255,.9)');
-                // HEAD/TAIL corners
+                lbox(aY, '▶ ARTERY — O₂', 'HIGH PRESSURE | O₂ RICH', 'rgba(255,58,88,.9)');
+                lbox(vY, '◀ VEIN — CO₂', 'LOW PRESSURE | CO₂ RICH | VALVE', 'rgba(16,220,255,.9)');
                 ctx.fillStyle = 'rgba(0,0,0,.58)'; ctx.fillRect(0, cY - fs - 4, 104 + fs * 2.6, fs * 2 + 11);
                 ctx.fillStyle = 'rgba(255,45,85,.8)'; ctx.fillRect(0, cY - fs - 4, 2, fs * 2 + 11);
                 ctx.font = '800 ' + (fs + .5) + 'px Syne,sans-serif'; ctx.fillStyle = 'rgba(255,58,88,1)'; ctx.textAlign = 'left'; ctx.fillText('◀ HEAD', 13, cY - 1);
@@ -2728,43 +2728,55 @@
                 ctx.restore();
             }
 
-            var st = performance.now(), visib = 0;
+            var startT = performance.now();
             (function loop(now) {
                 requestAnimationFrame(loop);
-                var t = (now - st) * .001;
-                heartPulse = Math.pow(Math.abs(Math.sin(t * 1.18 * G.speed)), 8);
+                var dt = (now - startT) * .001;
+                SIM_T = dt;
+
+                // ── FIX: PULSE computed once per frame, shared globally ──
+                PULSE = Math.pow(Math.abs(Math.sin(dt * 1.18 * G.speed)), 8);
+
                 if (simStarted && zoom < 1) zoom = Math.min(1, zoom + .0018);
                 if (simStarted && visib < 1) visib = Math.min(1, visib + .004);
-                if (!G.paused) tubeOff += (1 + heartPulse * 2) * G.speed;
+                if (!G.paused) tubeOff += (1 + PULSE * 2) * G.speed;
 
                 ctx.clearRect(0, 0, W, H);
-                drawBg(t);
 
-                ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-W / 2, -H / 2);
+                // Background drawn WITHOUT zoom transform (screen-space)
+                drawBg();
 
-                // Draw fish in the CENTER, between the two vessels
-                var fishCX = W * .5, fishCY = H * .5, fishW = Math.min(W * .28, 320), fishH = fishW * .28;
-                drawFish(fishCX, fishCY, fishW, fishH, t, heartPulse, visib);
+                // Everything else in zoom-transformed space
+                // ── FIX: tubes drawn inside zoom so they scale WITH particles ──
+                ctx.save();
+                ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-W / 2, -H / 2);
 
-                // Tubes OVER fish base but UNDER particles (draw after fish for correct layering)
-                var px = heartPulse * (G.turbo ? 7 : 3.8);
+                // Fish (centered between the two vessels)
+                var fishW = Math.min(W * .28, 320), fishH = fishW * .28;
+                drawFish(W * .5, H * .5, fishW, fishH, PULSE, visib);
+
+                // Tubes inside the zoom transform — move with zoom
+                var px = PULSE * (G.turbo ? 7 : 3.8);
                 drawTube(aY, 'rgba(50,5,13,.82)', 'rgba(158,14,38,.92)', 'rgba(255,45,85,.4)', px);
                 drawTube(vY, 'rgba(2,12,55,.82)', 'rgba(6,45,158,.9)', 'rgba(0,229,255,.33)', px * .5);
                 drawCaps();
 
                 plas.forEach(p => { p.update(); p.draw() });
                 wbcs.forEach(w => { w.update(); w.draw() });
-                rbcs.forEach(r => r.update());
-                rbcs.sort((a, b) => a.oz - b.oz);
-                rbcs.forEach(r => r.draw());
+                rbcs.forEach(r => r.update()); rbcs.sort((a, b) => a.oz - b.oz); rbcs.forEach(r => r.draw());
 
                 ctx.restore();
 
+                // Labels always outside zoom (screen-space)
                 var nh = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nh')) || 54;
                 if (simStarted) drawLabels(nh);
 
                 var me = document.getElementById('mg'); if (me) me.textContent = String(Math.floor(zoom * 338)).padStart(3, '0');
                 var mb2 = document.getElementById('mb'); if (mb2) mb2.style.width = (zoom * 93) + '%';
+
+                // ── FIX: sync BPM display from PULSE (smooth, not setInterval) ──
+                var rawBPM = 66 + Math.round(PULSE * (G.turbo ? 40 : 18));
+                var bvEl = document.getElementById('bv'); if (bvEl && !bvEl._locked) bvEl.textContent = rawBPM;
             })(performance.now());
 
             window._vesselAt = function (y) {
@@ -2776,74 +2788,54 @@
             };
         })();
 
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         // MICRO-ZOOM CANVAS
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         (function () {
             var C, ctx, active = false, t2 = 0;
             var cells = [{ bx: .18, by: .35, sz: 22, ph: 0, r: 255, g: 50, b: 78 }, { bx: .48, by: .55, sz: 19, ph: 1.3, r: 255, g: 50, b: 78 }, { bx: .76, by: .28, sz: 21, ph: 2.5, r: 255, g: 50, b: 78 }, { bx: .32, by: .68, sz: 17, ph: .8, r: 255, g: 50, b: 78 }, { bx: .62, by: .72, sz: 15, ph: 2, r: 16, g: 142, b: 255 }, { bx: .88, by: .6, sz: 16, ph: 1.1, r: 16, g: 142, b: 255 }];
-            function init() {
-                C = document.getElementById('c-mz2'); if (!C) return; ctx = C.getContext('2d');
-                var dpr = Math.min(devicePixelRatio || 1, 2);
-                C.width = 240 * dpr; C.height = 260 * dpr; C.style.width = '240px'; C.style.height = '260px';
-                ctx.scale(dpr, dpr);
-            }
+            function init() { C = document.getElementById('c-mz2'); if (!C) return; ctx = C.getContext('2d'); var dpr = Math.min(devicePixelRatio || 1, 2); C.width = 240 * dpr; C.height = 260 * dpr; C.style.width = '240px'; C.style.height = '260px'; ctx.scale(dpr, dpr) }
             window._openMZ = function () { active = true; if (!ctx) init() };
             window._closeMZ = function () { active = false };
             (function loop() {
-                requestAnimationFrame(loop);
-                if (!active || !ctx) return;
-                t2 += .02;
+                requestAnimationFrame(loop); if (!active || !ctx) return;
+                // ── FIX: MZ cells pulse with shared PULSE ──
+                t2 = SIM_T;
                 var W = 240, H = 260;
                 ctx.fillStyle = 'rgba(1,3,11,.58)'; ctx.fillRect(0, 0, W, H);
                 ctx.strokeStyle = 'rgba(0,229,255,.04)'; ctx.lineWidth = .5;
                 for (var x = 0; x < W; x += 22) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke() }
                 for (var y = 0; y < H; y += 22) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke() }
-                for (var i = 0; i < 16; i++) {
-                    var ang = t2 * .28 + i * (Math.PI * 2 / 16);
-                    ctx.fillStyle = 'rgba(255,180,180,' + (0.03 + Math.sin(t2 + i) * .02) + ')';
-                    ctx.beginPath(); ctx.arc(W * .5 + Math.cos(ang) * W * .42, H * .5 + Math.sin(ang) * H * .4, 1, 0, Math.PI * 2); ctx.fill();
-                }
+                for (var i = 0; i < 16; i++) { var ang = t2 * .28 + i * (Math.PI * 2 / 16); ctx.fillStyle = 'rgba(255,180,180,' + (0.03 + Math.sin(t2 + i) * .02) + ')'; ctx.beginPath(); ctx.arc(W * .5 + Math.cos(ang) * W * .42, H * .5 + Math.sin(ang) * H * .4, 1, 0, Math.PI * 2); ctx.fill() }
                 cells.forEach(function (c) {
-                    var px = c.bx * W, py = c.by * H, pulse2 = Math.sin(t2 * 1.1 + c.ph) * .06, s = c.sz * (1 + pulse2);
-                    ctx.strokeStyle = 'rgba(' + Math.max(0, c.r - 55) + ',' + Math.max(0, c.g - 22) + ',' + Math.max(0, c.b - 22) + ',.35)';
-                    ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(px, py, s * 1.06, s * .6, 0, 0, Math.PI * 2); ctx.stroke();
+                    var px = c.bx * W, py = c.by * H;
+                    // pulse tied to global PULSE
+                    var s = c.sz * (1 + PULSE * .1);
+                    ctx.strokeStyle = 'rgba(' + Math.max(0, c.r - 55) + ',' + Math.max(0, c.g - 22) + ',' + Math.max(0, c.b - 22) + ',.35)'; ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.ellipse(px, py, s * 1.06, s * .6, 0, 0, Math.PI * 2); ctx.stroke();
                     ctx.shadowBlur = s * 1.2; ctx.shadowColor = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',.3)';
                     var grd = ctx.createRadialGradient(px - s * .22, py - s * .22, 0, px, py, s);
-                    grd.addColorStop(0, 'rgba(' + Math.min(255, c.r + 55) + ',' + Math.min(255, c.g + 38) + ',' + Math.min(255, c.b + 26) + ',.97)');
-                    grd.addColorStop(.6, 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',.92)');
-                    grd.addColorStop(1, 'rgba(' + Math.max(0, c.r - 50) + ',' + Math.max(0, c.g - 20) + ',' + Math.max(0, c.b - 20) + ',.7)');
-                    ctx.fillStyle = grd; ctx.beginPath(); ctx.ellipse(px, py, s, s * .55, 0, 0, Math.PI * 2); ctx.fill();
-                    ctx.shadowBlur = 0;
-                    var dep = ctx.createRadialGradient(px, py, 0, px, py, s * .33);
-                    dep.addColorStop(0, 'rgba(' + Math.max(0, c.r - 76) + ',' + Math.max(0, c.g - 32) + ',' + Math.max(0, c.b - 24) + ',.42)');
-                    dep.addColorStop(1, 'rgba(0,0,0,0)');
+                    grd.addColorStop(0, 'rgba(' + Math.min(255, c.r + 55) + ',' + Math.min(255, c.g + 38) + ',' + Math.min(255, c.b + 26) + ',.97)'); grd.addColorStop(.6, 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',.92)'); grd.addColorStop(1, 'rgba(' + Math.max(0, c.r - 50) + ',' + Math.max(0, c.g - 20) + ',' + Math.max(0, c.b - 20) + ',.7)');
+                    ctx.fillStyle = grd; ctx.beginPath(); ctx.ellipse(px, py, s, s * .55, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+                    var dep = ctx.createRadialGradient(px, py, 0, px, py, s * .33); dep.addColorStop(0, 'rgba(' + Math.max(0, c.r - 76) + ',' + Math.max(0, c.g - 32) + ',' + Math.max(0, c.b - 24) + ',.42)'); dep.addColorStop(1, 'rgba(0,0,0,0)');
                     ctx.fillStyle = dep; ctx.beginPath(); ctx.ellipse(px, py, s * .33, s * .2, 0, 0, Math.PI * 2); ctx.fill();
                     ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.ellipse(px - s * .21, py - s * .21, s * .26, s * .16, -.42, 0, Math.PI * 2); ctx.fill();
                 });
-                ctx.strokeStyle = 'rgba(0,229,255,.46)'; ctx.lineWidth = 1;
-                ctx.beginPath(); ctx.moveTo(W - 38, H - 11); ctx.lineTo(W - 11, H - 11); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(W - 38, H - 14); ctx.lineTo(W - 38, H - 8); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(W - 11, H - 14); ctx.lineTo(W - 11, H - 8); ctx.stroke();
-                ctx.font = '500 7.5px JetBrains Mono,monospace'; ctx.fillStyle = 'rgba(0,229,255,.5)'; ctx.textAlign = 'center';
-                ctx.fillText('10 μm', W - 24.5, H - 3);
+                ctx.strokeStyle = 'rgba(0,229,255,.46)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(W - 38, H - 11); ctx.lineTo(W - 11, H - 11); ctx.stroke(); ctx.beginPath(); ctx.moveTo(W - 38, H - 14); ctx.lineTo(W - 38, H - 8); ctx.stroke(); ctx.beginPath(); ctx.moveTo(W - 11, H - 14); ctx.lineTo(W - 11, H - 8); ctx.stroke();
+                ctx.font = '500 7.5px JetBrains Mono,monospace'; ctx.fillStyle = 'rgba(0,229,255,.5)'; ctx.textAlign = 'center'; ctx.fillText('10 μm', W - 24.5, H - 3);
             })();
         })();
 
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         // SOUND REACTIVE
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         var beatBars = [];
         (function () {
             var bar = document.getElementById('beat'); var n = 30;
-            for (var i = 0; i < n; i++) {
-                var d = document.createElement('div'); d.className = 'bb';
-                d.style.background = i < n * .38 ? 'var(--r)' : i < n * .72 ? 'var(--am)' : 'var(--g)';
-                bar.appendChild(d);
-            }
+            for (var i = 0; i < n; i++) { var d = document.createElement('div'); d.className = 'bb'; d.style.background = i < n * .38 ? 'var(--r)' : i < n * .72 ? 'var(--am)' : 'var(--g)'; bar.appendChild(d) }
             beatBars = Array.from(bar.querySelectorAll('.bb'));
         })();
-        var micAC, micAn, micData, micActive = false, autoBeatOn = false, autoBeatT = 0;
+        var micAC, micAn, micData, micActive = false, autoBeatOn = false;
         function toggleMic() {
             if (micActive) { micActive = false; document.getElementById('btn-mic').classList.remove('on'); document.getElementById('sr-status').textContent = 'OFF'; document.getElementById('beat').classList.remove('on'); return }
             navigator.mediaDevices && navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
@@ -2862,21 +2854,20 @@
         }
         setInterval(function () {
             var level = 0, bdata = [];
-            if (micActive && micAn) { micAn.getByteFrequencyData(micData); var sum = 0; for (var i = 0; i < micData.length; i++)sum += micData[i]; level = sum / micData.length / 255; bdata = Array.from(micData).map(v => (v / 255) * 14); }
-            else if (autoBeatOn) { autoBeatT += .06 * G.speed; level = Math.pow(Math.max(0, Math.sin(autoBeatT * Math.PI)), 3); bdata = beatBars.map((_, i) => Math.max(1, (Math.sin(autoBeatT * 2 + i * .35) + 1) * 7 * (.3 + level * .7) + Math.random() * 1.5)); }
-            else { bdata = beatBars.map((_, i) => Math.max(1, heartPulseG * (i % 3 === 0 ? 6 : 3))); level = heartPulseG * .4; }
+            if (micActive && micAn) { micAn.getByteFrequencyData(micData); var sum = 0; for (var i = 0; i < micData.length; i++)sum += micData[i]; level = sum / micData.length / 255; bdata = Array.from(micData).map(v => (v / 255) * 14) }
+            else if (autoBeatOn) { G.autoBeatT += .06 * G.speed; level = Math.pow(Math.max(0, Math.sin(G.autoBeatT * Math.PI)), 3); bdata = beatBars.map((_, i) => Math.max(1, (Math.sin(G.autoBeatT * 2 + i * .35) + 1) * 7 * (.3 + level * .7) + Math.random() * 1.5)) }
+            else { bdata = beatBars.map((_, i) => Math.max(1, PULSE * (i % 3 === 0 ? 6 : 3))); level = PULSE * .4 }
             G.soundLevel = level;
-            if ((autoBeatOn || micActive) && !G.turbo) { G.speed = 1 + level * 2.5; document.getElementById('sl-spd').value = Math.round(G.speed * 22); document.getElementById('sv-spd').textContent = Math.round(G.speed * 22); }
+            if ((autoBeatOn || micActive) && !G.turbo) { G.speed = 1 + level * 2.5; document.getElementById('sl-spd').value = Math.round(G.speed * 22); document.getElementById('sv-spd').textContent = Math.round(G.speed * 22) }
             beatBars.forEach((b, i) => { b.style.height = Math.max(2, (bdata[i] || 1.5)) + 'px' });
             document.getElementById('sr-amp').textContent = Math.round(level * 100) + '%';
             document.getElementById('sr-bar').style.width = Math.round(level * 100) + '%';
             document.getElementById('sr-bpm').textContent = autoBeatOn ? '72 BPM' : micActive ? 'LIVE' : '--';
         }, 55);
-        var heartPulseG = 0; setInterval(() => heartPulseG = Math.pow(Math.abs(Math.sin(Date.now() * .001 * 1.18 * G.speed)), 8), 50);
 
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         // INTRO BOOT
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         var LOGS = ['LOADING NEURAL INTERFACE...', 'BUILDING FISH MESH...', 'COMPILING VESSEL NETWORK...', 'INJECTING RBC PARTICLES...', 'WBC + PLASMA SYSTEM INIT...', 'CARDIAC MONITOR ONLINE...', 'MICRO-ZOOM MODULE READY...', 'SOUND REACTIVE ACTIVE...', 'ALL SYSTEMS NOMINAL'];
         var step = 0;
         function tick() {
@@ -2893,16 +2884,15 @@
             document.getElementById('intro').classList.add('out');
             setTimeout(() => { document.getElementById('intro').style.display = 'none'; document.getElementById('hud').classList.add('on') }, 2100);
             setInterval(() => {
-                var bv = document.getElementById('bv'); if (bv) bv.textContent = 66 + Math.floor(Math.random() * 18);
                 var tv = document.getElementById('tmp'); if (tv) tv.textContent = (25.7 + Math.random() * .6).toFixed(1) + '°C';
                 var rv = document.getElementById('rbc'); if (rv) rv.textContent = (2.05 + Math.random() * .42).toFixed(2) + 'M/μL';
             }, 1700);
         };
         setInterval(() => { var c = document.getElementById('clk'); if (c) c.textContent = new Date().toLocaleTimeString('en-US', { hour12: false }) }, 1000);
 
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         // CONTROLS
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         document.getElementById('sl-spd').addEventListener('input', function () { document.getElementById('sv-spd').textContent = this.value; G.speed = 0.08 + this.value * .019 });
         document.getElementById('sl-rbc').addEventListener('input', function () { document.getElementById('sv-rbc').textContent = this.value; window._setDensity && window._setDensity(this.value / 100) });
         document.getElementById('sl-vis').addEventListener('input', function () { document.getElementById('sv-vis').textContent = this.value; G.viscosity = this.value / 100 });
@@ -2911,15 +2901,15 @@
         function openMZ() { document.getElementById('mzmod').classList.add('on'); window._openMZ && window._openMZ(); document.getElementById('btn-mzz').classList.add('on'); sfxO() }
         function closeMZ() { document.getElementById('mzmod').classList.remove('on'); window._closeMZ && window._closeMZ(); document.getElementById('btn-mzz').classList.remove('on') }
 
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         // HOVER + TOOLTIP
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         var vhl = document.getElementById('vhl');
         document.addEventListener('mousemove', function (e) {
             var v = window._vesselAt && window._vesselAt(e.clientY);
             if (v) {
                 var map = { ARTERY: ['ARTERY — O₂ RICH | HIGH PRESSURE', 'var(--r)'], VEIN: ['VEIN — CO₂ RICH | LOW PRESSURE | VALVE', 'var(--b)'], CAPILLARY: ['CAPILLARY NETWORK — GAS EXCHANGE | 5–10μm', 'var(--g)'] };
-                var info = map[v]; vhl.textContent = info[0]; vhl.style.left = Math.min(e.clientX + 15, innerWidth - 252) + 'px'; vhl.style.top = Math.max(e.clientY - 29, 8) + 'px'; vhl.style.borderLeftColor = info[1]; vhl.style.color = info[1]; vhl.classList.add('on');
+                var info = map[v]; vhl.textContent = info[0]; vhl.style.left = Math.min(e.clientX + 15, innerWidth - 252) + 'px'; vhl.style.top = Math.max(e.clientY - 29, 8) + 'px'; vhl.style.borderLeftColor = info[1]; vhl.style.color = info[1]; vhl.classList.add('on')
             } else vhl.classList.remove('on');
         });
         var TIPS = { artery: { title: 'ARTERY — หลอดเลือดแดง', body: 'นำเลือด O₂ สูงจากหัวใจ ผนัง 3 ชั้น Tunica Media หนา' }, cap: { title: 'CAPILLARY — หลอดเลือดฝอย', body: '5–10 μm ผนัง 1 ชั้น แลกเปลี่ยน O₂/CO₂' }, vein: { title: 'VEIN — หลอดเลือดดำ', body: 'นำ CO₂ กลับหัวใจ มี Valve ป้องกัน backflow' } };
@@ -2930,9 +2920,9 @@
             el.addEventListener('mouseleave', () => tip.classList.remove('on'));
         });
 
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         // INFO PANELS + DRAG
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         var infoOpen = false, pState = { a: true, c: true, v: true, d: false };
         function toggleInfo(btn) { infoOpen = !infoOpen; document.getElementById('ptog').style.display = infoOpen ? 'flex' : 'none'; btn.classList.toggle('on', infoOpen);['a', 'c', 'v', 'd'].forEach(k => { var fp = document.getElementById('fp-' + k); if (!infoOpen) fp.classList.add('hidden'); else { if (pState[k]) fp.classList.remove('hidden'); else fp.classList.add('hidden') } }) }
         function togglePanel(k, btn) { pState[k] = !pState[k]; var fp = document.getElementById('fp-' + k); if (pState[k]) fp.classList.remove('hidden'); else fp.classList.add('hidden'); if (btn) btn.classList.toggle('active', pState[k]) }
@@ -2946,9 +2936,9 @@
             document.addEventListener('touchend', () => { drag = false; el.style.transition = '' });
         });
 
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         // NAV + QUIZ
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════
         function Nav(pg, btn) { document.querySelectorAll('.bn').forEach(b => b.classList.remove('on')); btn.classList.add('on'); sfxC(); if (pg === 'sim') { closeOv(); return } closeOv(); var el = document.getElementById('ov-' + pg); if (el) { el.classList.add('on'); sfxO() } if (pg === 'quiz') Q.init() }
         function closeOv() { document.querySelectorAll('.ov').forEach(o => o.classList.remove('on')) }
         var QD = [
@@ -2962,21 +2952,86 @@
             i: 0, s: 0, done: false,
             init() { this.i = 0; this.s = 0; this.done = false; this.render() },
             render() {
-                var el = document.getElementById('qi'); if (this.i >= QD.length) { this.result(el); return }
-                var d = QD[this.i], pct = Math.round(this.i / QD.length * 100);
-                var opts = d.o.map((o, i) => '<button class="qo" onclick="Q.check(' + i + ',this)"><span>' + o + '</span></button>').join('');
-                el.innerHTML = '<div class="qm"><span>QUESTION ' + (this.i + 1) + '/' + QD.length + '</span><span style="color:var(--b)">' + pct + '%</span></div><div class="pb"><div class="pbf" style="width:' + pct + '%"></div></div><div class="qq">' + d.q + '</div><div id="opts">' + opts + '</div><div class="qex" id="qex">💡 ' + d.e + '</div>'
+                var self = this;
+                var el = document.getElementById('qi');
+                if (!el) return;
+                if (self.i >= QD.length) { self.result(el); return }
+                var d = QD[self.i], pct = Math.round(self.i / QD.length * 100);
+                var opts = d.o.map(function (o, idx) {
+                    return '<button class="qo" onclick="Q.check(' + idx + ',this)"><span>' + o + '</span></button>';
+                }).join('');
+                // ── Reset done flag BEFORE injecting HTML so new buttons work ──
+                self.done = false;
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(6px)';
+                el.innerHTML = '<div class="qm"><span>QUESTION ' + (self.i + 1) + '/' + QD.length + '</span><span style="color:var(--b)">' + pct + '%</span></div>'
+                    + '<div class="pb"><div class="pbf" style="width:' + pct + '%"></div></div>'
+                    + '<div class="qq">' + d.q + '</div>'
+                    + '<div id="opts">' + opts + '</div>'
+                    + '<div class="qex" id="qex">💡 ' + d.e + '</div>';
+                // Animate in
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        el.style.transition = 'opacity .3s ease,transform .3s ease';
+                        el.style.opacity = '1';
+                        el.style.transform = 'none';
+                    });
+                });
             },
             check(i, btn) {
-                if (this.done) return; this.done = true; var c = QD[this.i].c;
-                document.querySelectorAll('.qo').forEach(b => b.disabled = true);
-                if (i === c) { btn.classList.add('ok'); this.s++; sfxOk(); document.getElementById('sOk').play() }
-                else { btn.classList.add('no'); document.querySelectorAll('.qo')[c].classList.add('ok'); sfxBad(); document.getElementById('sBad').play() }
-                document.getElementById('qex').style.display = 'block'; setTimeout(() => { this.i++; this.render() }, 2400)
+                if (this.done) return;
+                this.done = true; // lock while showing answer
+                var self = this, c = QD[self.i].c;
+                // Disable all options
+                document.querySelectorAll('.qo').forEach(function (b) { b.disabled = true; });
+                if (i === c) {
+                    btn.classList.add('ok'); self.s++; sfxOk();
+                    try { document.getElementById('sOk').play(); } catch (e) { }
+                } else {
+                    btn.classList.add('no');
+                    var opts = document.querySelectorAll('.qo');
+                    if (opts[c]) opts[c].classList.add('ok');
+                    sfxBad();
+                    try { document.getElementById('sBad').play(); } catch (e) { }
+                }
+                var qex = document.getElementById('qex');
+                if (qex) {
+                    qex.style.display = 'block';
+                    qex.style.opacity = '0';
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () {
+                            qex.style.transition = 'opacity .4s ease';
+                            qex.style.opacity = '1';
+                        });
+                    });
+                }
+                // Advance — done flag will be reset inside render()
+                setTimeout(function () {
+                    self.i++;
+                    self.render();
+                }, 2600);
             },
             result(el) {
-                var p = Math.round(this.s / QD.length * 100), gc = p >= 80 ? 'var(--g)' : p >= 60 ? 'var(--b)' : 'var(--r)', gl = p >= 80 ? 'EXCELLENT' : p >= 60 ? 'GOOD' : 'NEEDS REVIEW';
-                el.innerHTML = '<div style="text-align:center;padding:26px 0"><div class="sbig">' + this.s + '/' + QD.length + '</div><div class="slbl">TOTAL SCORE · ' + p + '%</div><div style="font-family:var(--hud);font-size:.87rem;font-weight:700;color:' + gc + ';margin-top:12px">' + gl + '</div><div style="margin-top:17px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><button class="bnn" onclick="Q.init()">↺ RETRY</button><button class="bnn" onclick="closeOv()">✕ CLOSE</button></div></div>'
+                var p = Math.round(this.s / QD.length * 100);
+                var gc = p >= 80 ? 'var(--g)' : p >= 60 ? 'var(--b)' : 'var(--r)';
+                var gl = p >= 80 ? 'EXCELLENT' : p >= 60 ? 'GOOD' : 'NEEDS REVIEW';
+                var gm = p >= 80 ? 'ยอดเยี่ยมมาก! 🎉' : p >= 60 ? 'ดีมาก ทบทวนข้อที่ผิดได้เลย' : 'กลับไปดู BIO DATA ก่อนนะครับ/ค่ะ';
+                el.style.opacity = '0';
+                el.innerHTML = '<div style="text-align:center;padding:28px 0">'
+                    + '<div class="sbig">' + this.s + '/' + QD.length + '</div>'
+                    + '<div class="slbl">TOTAL SCORE · ' + p + '%</div>'
+                    + '<div style="font-family:var(--hud);font-size:.87rem;font-weight:700;color:' + gc + ';margin-top:12px">' + gl + '</div>'
+                    + '<div style="font-family:var(--mono);font-size:.54rem;color:var(--td);margin-top:5px">' + gm + '</div>'
+                    + '<div style="margin-top:20px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">'
+                    + '<button class="bnn" onclick="Q.init()">↺ RETRY</button>'
+                    + '<button class="bnn" onclick="closeOv()">✕ CLOSE</button>'
+                    + '</div></div>';
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        el.style.transition = 'opacity .5s ease';
+                        el.style.opacity = '1';
+                    });
+                });
             }
         };
         var aOn = true;
